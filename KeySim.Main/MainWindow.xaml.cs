@@ -24,18 +24,6 @@ namespace KeyboardSim_Demo
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("User32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        [DllImport("User32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
         private HwndSource _source;
         private const int HOTKEY_ID = 9000;
         private const int GWL_EXSTYLE = -20;
@@ -50,8 +38,8 @@ namespace KeyboardSim_Demo
             _source.AddHook(HwndHook);
             RegisterHotKey();
 
-            SetWindowLong(helper.Handle, GWL_EXSTYLE,
-            GetWindowLong(helper.Handle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
+            WinHelper.SetWindowLong(helper.Handle, GWL_EXSTYLE,
+            WinHelper.GetWindowLong(helper.Handle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -65,9 +53,7 @@ namespace KeyboardSim_Demo
         private void RegisterHotKey()
         {
             var helper = new WindowInteropHelper(this);
-            const uint VK_F10 = 0x79;
-            const uint MOD_CTRL = 0x0002;
-            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, MOD_CTRL, VK_F10))
+            if (!WinHelper.RegisterHotKey(helper.Handle, HOTKEY_ID, (uint)WinHelper.WinModKeys.MOD_CONTROL, (uint)WinHelper.WinKeys.VK_F10))
             {
                 // handle error
             }
@@ -76,7 +62,7 @@ namespace KeyboardSim_Demo
         private void UnregisterHotKey()
         {
             var helper = new WindowInteropHelper(this);
-            UnregisterHotKey(helper.Handle, HOTKEY_ID);
+            WinHelper.UnregisterHotKey(helper.Handle, HOTKEY_ID);
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
