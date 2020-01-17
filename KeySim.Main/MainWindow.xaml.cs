@@ -53,7 +53,7 @@ namespace KeyboardSim_Demo
         private void RegisterHotKey()
         {
             var helper = new WindowInteropHelper(this);
-            if (!WinHelper.RegisterHotKey(helper.Handle, HOTKEY_ID, (uint)WinHelper.WinModKeys.MOD_CONTROL, (uint)WinHelper.WinKeys.VK_F10))
+            if (!WinHelper.RegisterHotKey(helper.Handle, HOTKEY_ID, (uint)WinHelper.ModKeys.MOD_CONTROL, (uint)VirtualKeyCode.F10))
             {
                 // handle error
             }
