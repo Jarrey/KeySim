@@ -7,26 +7,33 @@ using System.Threading.Tasks;
 
 namespace KeyboardSim_Demo
 {
-    internal class WinHelper
+    internal static class WinNative
     {
-        [DllImport("User32.dll")]
+        public const int HOTKEY_ID = 9000;
+        public const int WM_HOTKEY = 0x0312;
+        public const int GWL_EXSTYLE = -20;
+        public const int WS_EX_NOACTIVATE = 0x08000000;
+
+        private const string USER32_DLL = "User32.dll";
+
+        [DllImport(USER32_DLL)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
-        [DllImport("User32.dll")]
+        [DllImport(USER32_DLL)]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("User32.dll")]
+        [DllImport(USER32_DLL)]
         public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        [DllImport("User32.dll")]
+        [DllImport(USER32_DLL)]
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         public enum ModKeys : uint
         {
-            MOD_ALT = 0x0001,
-            MOD_CONTROL = 0x0002,
-            MOD_SHIFT = 0x0004,
-            MOD_WIN = 0x0008
+            ALT = 0x0001,
+            CTL = 0x0002,            
+            SHIFT = 0x0004,
+            WIN = 0x0008
         }
     }
 }

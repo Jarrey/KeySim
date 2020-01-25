@@ -38,6 +38,9 @@
     <Reference Include="GregsStack.InputSimulatorStandard, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GregsStack.InputSimulatorStandard.1.1.1\lib\netstandard2.0\GregsStack.InputSimulatorStandard.dll</HintPath>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -64,7 +67,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="WinHelper.cs" />
+    <Compile Include="Model\Action.cs" />
+    <Compile Include="Model\ActionType.cs" />
+    <Compile Include="Model\Diractive.cs" />
+    <Compile Include="Model\DiractiveFormat.cs" />
+    <Compile Include="Model\DiractiveSource.cs" />
+    <Compile Include="Parser\IParser.cs" />
+    <Compile Include="Parser\JsonDiractiveParser.cs" />
+    <Compile Include="Parser\ParserRepository.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\OpenDiractiveViewModel.cs" />
+    <Compile Include="View\OpenDiractive.xaml.cs">
+      <DependentUpon>OpenDiractive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WinNative.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,6 +94,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\OpenDiractive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -104,6 +125,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\KeySim.Common\KeySim.Common.csproj">
+      <Project>{e6d04e7b-d186-4c82-a6ad-6314e5c87539}</Project>
+      <Name>KeySim.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

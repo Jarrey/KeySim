@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KeyboardSim_Demo.Parser;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,12 @@ namespace KeyboardSim_Demo
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            // initialize parsers
+            ParserRepository.Instance.RegisterParser(new JsonDiractiveParser());
+
+            base.OnStartup(e);
+        }
     }
 }

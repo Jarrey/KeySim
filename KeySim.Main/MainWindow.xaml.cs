@@ -1,21 +1,12 @@
 ﻿using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
+using KeyboardSim_Demo.View;
+using KeyboardSim_Demo.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using static KeyboardSim_Demo.Utils;
+using static KeyboardSim_Demo.WinNative;
 
 namespace KeyboardSim_Demo
 {
@@ -25,49 +16,46 @@ namespace KeyboardSim_Demo
     public partial class MainWindow : Window
     {
         private HwndSource _source;
-        private const int HOTKEY_ID = 9000;
-        private const int GWL_EXSTYLE = -20;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        
+        private WindowInteropHelper _winHelper;
+        private IntPtr _winHandle;
+        private InputSimulator simulator = new InputSimulator();
+        private MainWindowViewModel viewModel = new MainWindowViewModel();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.DataContext = viewModel;
+        }
+
+        #region Override Methods
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            var helper = new WindowInteropHelper(this);
-
-            _source = HwndSource.FromHwnd(helper.Handle);
+            _winHelper = new WindowInteropHelper(this);
+            _winHandle = _winHelper.Handle;
+            _source = HwndSource.FromHwnd(_winHandle);
             _source.AddHook(HwndHook);
-            RegisterHotKey();
+            RegisterHotKey(_winHandle, (uint)ModKeys.CTL, (uint)VirtualKeyCode.F10);
 
-            WinHelper.SetWindowLong(helper.Handle, GWL_EXSTYLE,
-            WinHelper.GetWindowLong(helper.Handle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
+            // Set window style to inactived
+            SetWindowLong(_winHandle, GWL_EXSTYLE, GetWindowLong(_winHandle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
         }
 
         protected override void OnClosed(EventArgs e)
         {
+            UnregisterHotKey(_winHandle);
             _source.RemoveHook(HwndHook);
             _source = null;
-            UnregisterHotKey();
+            _winHandle = IntPtr.Zero;
+            _winHelper = null;
             base.OnClosed(e);
         }
 
-        private void RegisterHotKey()
-        {
-            var helper = new WindowInteropHelper(this);
-            if (!WinHelper.RegisterHotKey(helper.Handle, HOTKEY_ID, (uint)WinHelper.ModKeys.MOD_CONTROL, (uint)VirtualKeyCode.F10))
-            {
-                // handle error
-            }
-        }
-
-        private void UnregisterHotKey()
-        {
-            var helper = new WindowInteropHelper(this);
-            WinHelper.UnregisterHotKey(helper.Handle, HOTKEY_ID);
-        }
+        #endregion
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            const int WM_HOTKEY = 0x0312;
             switch (msg)
             {
                 case WM_HOTKEY:
@@ -83,32 +71,39 @@ namespace KeyboardSim_Demo
             return IntPtr.Zero;
         }
 
-        private InputSimulator simulator = new InputSimulator();
-
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
         private void OnHotKeyPressed()
         {
             System.Drawing.Point point = simulator.Mouse.Position;
-            this.Left = point.X;
-            this.Top = point.Y;
-            this.Visibility = Visibility.Visible;
+            Left = point.X;
+            Top = point.Y;
+            Visibility = Visibility.Visible;
         }
+
+        #region Event Handler
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            simulator.Keyboard.TextEntry("HELLO!");
+            simulator.Keyboard.TextEntry("你好!");
             simulator.Keyboard.KeyDown(VirtualKeyCode.TAB);
 
-            this.Visibility = Visibility.Collapsed;
+            // this.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Collapsed;
+            // this.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            OpenDiractiveViewModel vm = new OpenDiractiveViewModel();
+            OpenDiractive openDir = new OpenDiractive(vm);
+            if (openDir.ShowDialog() == true)
+            {
+                viewModel.CurrentDiractive = vm.Diractive;
+            }
         }
     }
 }

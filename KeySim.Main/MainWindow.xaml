@@ -8,6 +8,7 @@
         Title="MainWindow" Height="450" Width="800" ShowInTaskbar="True" BorderThickness="0"
         Loaded="Window_Loaded"  Focusable="False" Topmost="True">
     <StackPanel Focusable="False">
+        <Button Content="Open ..." Click="Button_Click_1"/>
         <Button Content="DEMO" Click="Button_Click" Padding="50"/>
     </StackPanel>
 </Window>
