@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace KeyboardSim
 {
-    internal static class WinNative
+    public static class WinNative
     {
         public const int WM_HOTKEY = 0x0312;
         public const int GWL_EXSTYLE = -20;

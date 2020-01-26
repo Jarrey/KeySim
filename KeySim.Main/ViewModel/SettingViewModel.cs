@@ -1,6 +1,8 @@
-﻿using KeySim.Common;
+﻿using GregsStack.InputSimulatorStandard.Native;
+using KeySim.Common;
 using KeySim.Common.Command;
 using System.Windows;
+using static KeyboardSim.WinNative;
 
 namespace KeyboardSim.ViewModel
 {
@@ -10,36 +12,46 @@ namespace KeyboardSim.ViewModel
 
         public SettingViewModel()
         {
+            ReadSettings();
         }
 
         #region Properties
+        private bool _launchOnSysUp;
+        public bool LaunchOnSysUp
+        {
+            get { return _launchOnSysUp; }
+            set { SetProperty(ref _launchOnSysUp, value); }
+        }
 
+        private ModKeys _globalShortModKey;
+        public ModKeys GlobalShortModKey
+        {
+            get { return _globalShortModKey; }
+            set { SetProperty(ref _globalShortModKey, value); }
+        }
+
+        private VirtualKeyCode _globalShortKey;
+        public VirtualKeyCode GlobalShortKey
+        {
+            get { return _globalShortKey; }
+            set { SetProperty(ref _globalShortKey, value); }
+        }
         #endregion
 
         #region Methods
 
         private void ReadSettings()
         {
-            Language = (string)Setting[AppSettings.GLOBAL_LANGUAGE];
-            TextSize = (double)Setting[AppSettings.APP_TEXT_SIZE];
-            TextColor = (Color)Setting[AppSettings.APP_TEXT_COLOR];
-            TextHighlightColor = (Color)Setting[AppSettings.APP_TEXT_HIGHLIGHT_COLOR];
-            ValueTextColor = (Color)Setting[AppSettings.APP_VALUE_TEXT_COLOR];
-            LineColor = (Color)Setting[AppSettings.APP_LINE_COLOR];
-            SignalColor = (Color)Setting[AppSettings.APP_SIGNAL_LINE_COLOR];
-            SignalHighlightColor = (Color)Setting[AppSettings.APP_SIGNAL_LINE_HIGHLIGHT_COLOR];
+            LaunchOnSysUp = (bool)Setting[AppSettings.LAUNCH_ON_SYSUP];
+            GlobalShortModKey = (uint)Setting[AppSettings.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (ModKeys)(uint)Setting[AppSettings.GLOBAL_SHORT_MODKEY];
+            GlobalShortKey = (uint)Setting[AppSettings.GLOBAL_SHORT_KEY] == 0 ? 0 : (VirtualKeyCode)(uint)Setting[AppSettings.GLOBAL_SHORT_KEY];
         }
 
         private void WriteSettings()
         {
-            Setting[AppSettings.GLOBAL_LANGUAGE] = Language;
-            Setting[AppSettings.APP_TEXT_SIZE] = TextSize;
-            Setting[AppSettings.APP_TEXT_COLOR] = TextColor;
-            Setting[AppSettings.APP_TEXT_HIGHLIGHT_COLOR] = TextHighlightColor;
-            Setting[AppSettings.APP_VALUE_TEXT_COLOR] = ValueTextColor;
-            Setting[AppSettings.APP_LINE_COLOR] = LineColor;
-            Setting[AppSettings.APP_SIGNAL_LINE_COLOR] = SignalColor;
-            Setting[AppSettings.APP_SIGNAL_LINE_HIGHLIGHT_COLOR] = SignalHighlightColor;
+            Setting[AppSettings.LAUNCH_ON_SYSUP] = LaunchOnSysUp;
+            Setting[AppSettings.GLOBAL_SHORT_MODKEY] = (uint)GlobalShortModKey;
+            Setting[AppSettings.GLOBAL_SHORT_KEY] = (uint)GlobalShortKey;
 
             AppSettings.SaveSettings(Setting);
         }
@@ -55,13 +67,14 @@ namespace KeyboardSim.ViewModel
                 {
                     if (p is Window window)
                     {
-                        AppSettings.SaveSettings(AppSettings.Instance);
+                        WriteSettings();
                         window.DialogResult = true;
                         window.Close();
                     }
                 });
             }
         }
+
         #endregion
     }
 }

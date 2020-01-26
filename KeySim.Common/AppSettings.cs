@@ -30,6 +30,12 @@ namespace KeySim.Common
                                 string attributeValue = element.GetAttribute("Value");
                                 if (typeName == typeof(int).FullName)
                                     settingInstance.Settings[keyName] = attributeValue.StringToInt();
+                                else if (typeName == typeof(uint).FullName)
+                                    settingInstance.Settings[keyName] = attributeValue.StringToUInt();
+                                else if (typeName == typeof(long).FullName)
+                                    settingInstance.Settings[keyName] = attributeValue.StringToLong();
+                                else if (typeName == typeof(ulong).FullName)
+                                    settingInstance.Settings[keyName] = attributeValue.StringToULong();
                                 else if (typeName == typeof(double).FullName)
                                     settingInstance.Settings[keyName] = attributeValue.StringToDouble();
                                 else if (typeName == typeof(float).FullName)

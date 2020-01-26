@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KeyboardSim.View"
         xmlns:keysim="clr-namespace:KeyboardSim"
+        xmlns:converter="clr-namespace:KeyboardSim.Converter"
         mc:Ignorable="d"
         Title="设置" Height="150" Width="300" Topmost="True" BorderThickness="0" AllowsTransparency="True" ResizeMode="NoResize"
         WindowStyle="None" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Background="#AA222222">
@@ -12,6 +13,7 @@
         <WindowChrome CaptionHeight="20" />
     </WindowChrome.WindowChrome>
     <Window.Resources>
+        <converter:ModKeyToBooleanConverter x:Key="ModKeyToBooleanConverter"/>
         <Style TargetType="Button">
             <Setter Property="Background" Value="DarkGray"/>
             <Setter Property="Margin" Value="5"/>
@@ -30,15 +32,19 @@
             <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2" Foreground="LightGray"/>
         </Grid>
         <StackPanel Grid.Row="1">
-            <CheckBox Content="随系统启动" Foreground="LightGray" Margin="10,5"/>
+            <CheckBox Content="随系统启动" Foreground="LightGray" Margin="10,5" IsChecked="{Binding LaunchOnSysUp, Mode=TwoWay}"/>
             <TextBlock Text="激活快捷键:" Foreground="LightGray" Margin="10,5"/>
             <StackPanel Orientation="Horizontal">
-                <RadioButton GroupName="modKey" Content="CTL" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"/>
-                <RadioButton GroupName="modKey" Content="SHIFT" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"/>
-                <RadioButton GroupName="modKey" Content="WIN" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"/>
+                <RadioButton GroupName="modKey" Content="CTL" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center" 
+                             IsChecked="{Binding GlobalShortModKey, Converter={StaticResource ModKeyToBooleanConverter}, ConverterParameter=2}"/>
+                <RadioButton GroupName="modKey" Content="SHIFT" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"
+                             IsChecked="{Binding GlobalShortModKey, Converter={StaticResource ModKeyToBooleanConverter}, ConverterParameter=4}"/>
+                <RadioButton GroupName="modKey" Content="WIN" Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"
+                             IsChecked="{Binding GlobalShortModKey, Converter={StaticResource ModKeyToBooleanConverter}, ConverterParameter=8}"/>
                 <TextBlock Text=" + " Foreground="LightGray" Margin="10,0" VerticalAlignment="Center"/>
                 <ComboBox Margin="10,0" VerticalAlignment="Center" Background="#222222" Width="50"
-                          ItemsSource="{Binding Path=., Source={x:Static keysim:WinNative.NormalKeys}}" DisplayMemberPath="Item2" SelectedValuePath="Item1">
+                          ItemsSource="{Binding Path=., Source={x:Static keysim:WinNative.NormalKeys}}" DisplayMemberPath="Item2" SelectedValuePath="Item1"
+                          SelectedValue="{Binding GlobalShortKey}">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Setter Property="Margin" Value="0"/>

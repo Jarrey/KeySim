@@ -7,7 +7,7 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         Title="速录键盘" Height="600" Width="300" ShowInTaskbar="True" BorderThickness="7" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize"
-        Loaded="Window_Loaded"  Focusable="False" Topmost="True" Background="#AA222288">
+        Loaded="Window_Loaded"  Focusable="False" Topmost="True" Background="#88222222">
     <Window.Resources>
         <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
     </Window.Resources>

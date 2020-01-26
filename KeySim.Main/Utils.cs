@@ -6,9 +6,9 @@ using static KeyboardSim.WinNative;
 
 namespace KeyboardSim
 {
-    internal class Utils
+    public static class Utils
     {
-        public static uint ConvertModKey(string modKey)
+        public static uint StringToModKey(this string modKey)
         {
             if (!string.IsNullOrEmpty(modKey))
             {
@@ -20,7 +20,7 @@ namespace KeyboardSim
             return 0;
         }
 
-        public static uint ConvertKey(string key)
+        public static uint StringToKey(this string key)
         {
             if (!string.IsNullOrEmpty(key))
             {
@@ -34,7 +34,7 @@ namespace KeyboardSim
         }
 
         private static InputSimulator simulator = new InputSimulator();
-        public static void ExecuteKeyboardCommand(Tuple<ActionType, string>[] actions)
+        public static void ExecuteKeyboardCommand(this Tuple<ActionType, string>[] actions)
         {
             if (actions != null)
             {
@@ -46,7 +46,7 @@ namespace KeyboardSim
                     }
                     else if (action.Item1 == ActionType.M)
                     {
-                        simulator.Keyboard.KeyDown((VirtualKeyCode)ConvertKey(action.Item2));
+                        simulator.Keyboard.KeyDown((VirtualKeyCode)action.Item2.StringToKey());
                     }
                 }
             }

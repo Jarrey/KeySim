@@ -32,8 +32,8 @@ namespace KeyboardSim.Model
                 string[] a = JSShortKey.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
                 if (a.Length == 2)
                 {
-                    uint modKey = Utils.ConvertModKey(a[0]);
-                    uint key = Utils.ConvertKey(a[1]);
+                    uint modKey = a[0].StringToModKey();
+                    uint key = a[1].StringToKey();
                     return new Tuple<uint, uint>(modKey, key);
                 }
                 return null;
@@ -68,7 +68,7 @@ namespace KeyboardSim.Model
             {
                 return new RelayCommand(() =>
                 {
-                    Utils.ExecuteKeyboardCommand(Actions);
+                    Actions.ExecuteKeyboardCommand();
                 });
             }
         }

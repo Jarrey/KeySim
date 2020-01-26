@@ -88,6 +88,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\ModKeyToBooleanConverter.cs" />
     <Compile Include="HotKeyManager.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\ActionType.cs" />
