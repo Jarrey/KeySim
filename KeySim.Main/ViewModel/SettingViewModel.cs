@@ -20,7 +20,11 @@ namespace KeyboardSim.ViewModel
         public bool LaunchOnSysUp
         {
             get { return _launchOnSysUp; }
-            set { SetProperty(ref _launchOnSysUp, value); }
+            set
+            {
+                SetProperty(ref _launchOnSysUp, value);
+                Utils.RegisterAutoStartupKey(value, App.AppName);
+            }
         }
 
         private ModKeys _globalShortModKey;
@@ -54,6 +58,9 @@ namespace KeyboardSim.ViewModel
             Setting[AppSettings.GLOBAL_SHORT_KEY] = (uint)GlobalShortKey;
 
             AppSettings.SaveSettings(Setting);
+
+            // register global hotkey
+            HotKeyManager.RegisterMainwindowHotKey((uint)GlobalShortModKey, (uint)GlobalShortKey);
         }
 
         #endregion

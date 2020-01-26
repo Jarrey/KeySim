@@ -95,6 +95,16 @@ namespace KeySim.Common
             Settings[LAUNCH_ON_SYSUP] = true;
             Settings[GLOBAL_SHORT_MODKEY] = 0u;
             Settings[GLOBAL_SHORT_KEY] = 0u;
+
+            Settings.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Values" && SettingChanged != null)
+            {
+                SettingChanged(this, EventArgs.Empty);
+            }
         }
 
         #region Setting fields
@@ -102,7 +112,9 @@ namespace KeySim.Common
         public const string LAUNCH_ON_SYSUP = nameof(LAUNCH_ON_SYSUP);
         public const string GLOBAL_SHORT_MODKEY = nameof(GLOBAL_SHORT_MODKEY);
         public const string GLOBAL_SHORT_KEY = nameof(GLOBAL_SHORT_KEY);
-        
+
+        public event EventHandler SettingChanged;
+
         #endregion
 
         public static AppSettings Instance
@@ -132,5 +144,6 @@ namespace KeySim.Common
     {
         string SettingFilePath { get; }
         ObservableDictionary<string, object> Settings { get; }
+        event EventHandler SettingChanged;
     }
 }

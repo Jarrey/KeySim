@@ -2,6 +2,7 @@
 using GregsStack.InputSimulatorStandard.Native;
 using KeyboardSim.Model;
 using KeyboardSim.ViewModel;
+using KeySim.Common;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,10 +34,14 @@ namespace KeyboardSim
         {
             base.OnSourceInitialized(e);
             _winHelper = new WindowInteropHelper(this);
-            _winHandle = HotKeyManager.MainWindowHandle = _winHelper.Handle;
+            _winHandle = _winHelper.Handle;
             _source = HwndSource.FromHwnd(_winHandle);
             _source.AddHook(HwndHook);
-            HotKeyManager.RegisterHotKey((uint)ModKeys.ALT, (uint)VirtualKeyCode.VK_F, ShowWindow);
+
+            // Register global hotkey
+            uint modKey = (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_MODKEY];
+            uint key = (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_KEY];
+            HotKeyManager.RegisterMainwindowHotKey(_winHandle, modKey, key, ShowWindow);
 
             // Set window style to inactived
             SetWindowLong(_winHandle, GWL_EXSTYLE, GetWindowLong(_winHandle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);

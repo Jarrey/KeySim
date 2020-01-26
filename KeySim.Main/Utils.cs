@@ -1,6 +1,7 @@
 ﻿using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
 using KeyboardSim.Model;
+using Microsoft.Win32;
 using System;
 using static KeyboardSim.WinNative;
 
@@ -49,6 +50,19 @@ namespace KeyboardSim
                         simulator.Keyboard.KeyDown((VirtualKeyCode)action.Item2.StringToKey());
                     }
                 }
+            }
+        }
+
+        public static void RegisterAutoStartupKey(bool isAutoStart, string keyName)
+        {
+            RegistryKey StartupPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+            if (isAutoStart)
+            {
+                StartupPath.SetValue(keyName, System.Reflection.Assembly.GetEntryAssembly().Location, RegistryValueKind.String);
+            }
+            else
+            {
+                StartupPath.DeleteValue(keyName, false);
             }
         }
     }

@@ -35,6 +35,14 @@ namespace KeyboardSim
 
         public static IEnumerable<Tuple<VirtualKeyCode, string>> NormalKeys => new Tuple<VirtualKeyCode, string>[]
         {
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.SPACE, "SPACE"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.RETURN, "ENTER"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.BACK, "BACK"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.TAB, "TAB"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.LEFT, "LEFT"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.UP, "UP"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.DOWN, "DOWN"),
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.RIGHT, "RIGHT"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.VK_0, "0"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.VK_1, "1"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.VK_2, "2"),
@@ -82,7 +90,7 @@ namespace KeyboardSim
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.F9, "F9"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.F10, "F10"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.F11, "F11"),
-            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.F12, "F12")
+            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.F12, "F12"),
         };
     }
 }
