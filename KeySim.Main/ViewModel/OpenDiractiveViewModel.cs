@@ -1,12 +1,12 @@
-﻿using KeyboardSim_Demo.Model;
-using KeyboardSim_Demo.Parser;
+﻿using KeyboardSim.Model;
+using KeyboardSim.Parser;
 using KeySim.Common;
 using KeySim.Common.Command;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 
-namespace KeyboardSim_Demo.ViewModel
+namespace KeyboardSim.ViewModel
 {
     public class OpenDiractiveViewModel : ViewModelBase
     {
@@ -79,7 +79,12 @@ namespace KeyboardSim_Demo.ViewModel
 
                         if (Parser != null)
                         {
+                            if (Diractive != null)
+                            {
+                                Diractive.UnregisterHotKey();
+                            }
                             Diractive = Parser.Parse(data);
+                            Diractive.RegisterHotKey();
                         }
                     }
                 });

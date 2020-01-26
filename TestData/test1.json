@@ -7,9 +7,10 @@
 	"Diractives": [
 		{
 			"Name": "测试指令1",
-			"ShortKey": "CTL|1",
 			"Actions": [
 				"I|Hello World!!!",
+				"M|TAB",
+				"M|TAB",
 				"M|TAB"
 			]
 		},
@@ -18,7 +19,17 @@
 			"ShortKey": "CTL|2",
 			"Actions": [
 				"I|你好？",
-				"M|ENTER"
+				"M|RETURN",
+				"I|我不好！！！",
+				"M|RETURN"
+			]
+		},
+		{
+			"Name": "测试名字很长很长很长很长的指令-3",
+			"ShortKey": "WIN|y",
+			"Actions": [
+				"I|你好？",
+				"M|RETURN"
 			]
 		}
 	]

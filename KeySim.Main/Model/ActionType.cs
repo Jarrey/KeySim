@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyboardSim_Demo.Model
+namespace KeyboardSim.Model
 {
     public enum ActionType
     {

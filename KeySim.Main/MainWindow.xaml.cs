@@ -1,14 +1,15 @@
 ﻿using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
-using KeyboardSim_Demo.View;
-using KeyboardSim_Demo.ViewModel;
+using KeyboardSim.Model;
+using KeyboardSim.ViewModel;
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
-using static KeyboardSim_Demo.Utils;
-using static KeyboardSim_Demo.WinNative;
+using static KeyboardSim.WinNative;
 
-namespace KeyboardSim_Demo
+namespace KeyboardSim
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -18,13 +19,12 @@ namespace KeyboardSim_Demo
         private HwndSource _source;
         private WindowInteropHelper _winHelper;
         private IntPtr _winHandle;
-        private InputSimulator simulator = new InputSimulator();
         private MainWindowViewModel viewModel = new MainWindowViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = viewModel;
+            DataContext = viewModel;
         }
 
         #region Override Methods
@@ -33,10 +33,10 @@ namespace KeyboardSim_Demo
         {
             base.OnSourceInitialized(e);
             _winHelper = new WindowInteropHelper(this);
-            _winHandle = _winHelper.Handle;
+            _winHandle = HotKeyManager.MainWindowHandle = _winHelper.Handle;
             _source = HwndSource.FromHwnd(_winHandle);
             _source.AddHook(HwndHook);
-            RegisterHotKey(_winHandle, (uint)ModKeys.CTL, (uint)VirtualKeyCode.F10);
+            HotKeyManager.RegisterHotKey((uint)ModKeys.ALT, (uint)VirtualKeyCode.VK_F, ShowWindow);
 
             // Set window style to inactived
             SetWindowLong(_winHandle, GWL_EXSTYLE, GetWindowLong(_winHandle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
@@ -44,7 +44,7 @@ namespace KeyboardSim_Demo
 
         protected override void OnClosed(EventArgs e)
         {
-            UnregisterHotKey(_winHandle);
+            HotKeyManager.UnregisterHotKey((uint)ModKeys.CTL, (uint)VirtualKeyCode.F10);
             _source.RemoveHook(HwndHook);
             _source = null;
             _winHandle = IntPtr.Zero;
@@ -52,6 +52,41 @@ namespace KeyboardSim_Demo
             base.OnClosed(e);
         }
 
+        #region Window move methods
+        private bool isMoving = false;
+        private Point currentPosition = new Point();
+        private void Caption_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            isMoving = true;
+            (sender as Grid).CaptureMouse();
+            currentPosition = e.GetPosition(this);
+
+            currentPosition.Y = Convert.ToInt16(Top) + currentPosition.Y;
+            currentPosition.X = Convert.ToInt16(Left) + currentPosition.X;
+        }
+        private void Caption_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isMoving = false;
+            (sender as Grid).ReleaseMouseCapture();
+        }
+
+        private void Caption_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMoving)
+            {
+                Point p = e.GetPosition(this);
+                Point MousePositionAbs = new Point
+                {
+                    X = Convert.ToInt16(Left) + p.X,
+                    Y = Convert.ToInt16(Top) + p.Y
+                };
+                Left = Left + (MousePositionAbs.X - currentPosition.X);
+                Top = Top + (MousePositionAbs.Y - currentPosition.Y);
+                currentPosition = MousePositionAbs;
+            }
+        }
+        #endregion
+        
         #endregion
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -59,51 +94,31 @@ namespace KeyboardSim_Demo
             switch (msg)
             {
                 case WM_HOTKEY:
-                    switch (wParam.ToInt32())
-                    {
-                        case HOTKEY_ID:
-                            OnHotKeyPressed();
-                            handled = true;
-                            break;
-                    }
+                    HotKeyManager.ExecuteHotKey(wParam.ToInt32());
+                    handled = true;
                     break;
             }
             return IntPtr.Zero;
         }
 
-        private void OnHotKeyPressed()
+        private void ShowWindow()
         {
-            System.Drawing.Point point = simulator.Mouse.Position;
-            Left = point.X;
-            Top = point.Y;
-            Visibility = Visibility.Visible;
+            viewModel.DockWindow(this, DockStatus.FLOW);
         }
 
         #region Event Handler
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            simulator.Keyboard.TextEntry("你好!");
-            simulator.Keyboard.KeyDown(VirtualKeyCode.TAB);
-
-            // this.Visibility = Visibility.Collapsed;
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // this.Visibility = Visibility.Collapsed;
+            Visibility = Visibility.Collapsed;
         }
-
-        #endregion
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ExitMenu_Click(object sender, RoutedEventArgs e)
         {
-            OpenDiractiveViewModel vm = new OpenDiractiveViewModel();
-            OpenDiractive openDir = new OpenDiractive(vm);
-            if (openDir.ShowDialog() == true)
-            {
-                viewModel.CurrentDiractive = vm.Diractive;
-            }
+            Close();
         }
+        private void ShowMenu_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.DockWindow(this, viewModel.DockStatus);
+        }
+        #endregion
     }
 }

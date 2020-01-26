@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyboardSim_Demo.Parser
+namespace KeyboardSim.Parser
 {
     public class ParserRepository
     {

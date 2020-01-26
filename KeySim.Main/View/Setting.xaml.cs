@@ -4,11 +4,11 @@ using System.Windows;
 namespace KeyboardSim.View
 {
     /// <summary>
-    /// Interaction logic for OpenDiractive.xaml
+    /// Interaction logic for Setting.xaml
     /// </summary>
-    public partial class OpenDiractive : Window
+    public partial class Setting : Window
     {
-        public OpenDiractive(ViewModelBase vm)
+        public Setting(ViewModelBase vm)
         {
             InitializeComponent();
             DataContext = vm;

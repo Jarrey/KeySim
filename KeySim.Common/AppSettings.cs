@@ -1,14 +1,4 @@
-﻿//********************************************************* 
-// LLaser.Common project - AppSettings.cs
-// Created at 2013-5-20
-// Author: Bob Bao jar.bob@gmail.com
-//
-// All rights reserved. Please follow license agreement to
-// rewrite and copy this code. 
-// 
-//********************************************************* 
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -37,24 +27,19 @@ namespace KeySim.Common
                             if (settingInstance.Settings.ContainsKey(keyName))
                             {
                                 string typeName = element.GetAttribute("Type");
+                                string attributeValue = element.GetAttribute("Value");
                                 if (typeName == typeof(int).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value").StringToInt();
+                                    settingInstance.Settings[keyName] = attributeValue.StringToInt();
                                 else if (typeName == typeof(double).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value").StringToDouble();
+                                    settingInstance.Settings[keyName] = attributeValue.StringToDouble();
                                 else if (typeName == typeof(float).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value").StringToFloat();
+                                    settingInstance.Settings[keyName] = attributeValue.StringToFloat();
                                 else if (typeName == typeof(bool).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value").StringToBoolean();
+                                    settingInstance.Settings[keyName] = attributeValue.StringToBoolean();
                                 else if (typeName == typeof(string).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value");
+                                    settingInstance.Settings[keyName] = attributeValue;
                                 else if (typeName == typeof(Color).FullName)
-                                    settingInstance.Settings[element.GetAttribute("KeyName")] =
-                                        element.GetAttribute("Value").StringToColor();
+                                    settingInstance.Settings[keyName] = attributeValue.StringToColor();
                             }
                         }
                     }
@@ -96,39 +81,22 @@ namespace KeySim.Common
 
         private static AppSettings _instance;
 
-        #region For instance
-
         private AppSettings()
         {
             Settings = new ObservableDictionary<string, object>();
 
             // Create Settings for AppSettings
-            Settings[GLOBAL_LANGUAGE] = "zh-cn";
-            Settings[GLOBAL_SUPPORT_LANGUAGES] = "简体中文(Simplified Chinese):zh-cn|English:en-us";
-            Settings[GLOBAL_SUPPORTMAIL] = "jar.bob@gmail.com";
-            Settings[APP_TEXT_SIZE] = 12.0;
-            Settings[APP_TEXT_COLOR] = Colors.Red;
-            Settings[APP_TEXT_HIGHLIGHT_COLOR] = Colors.Yellow;
-            Settings[APP_VALUE_TEXT_COLOR] = Colors.Yellow;
-            Settings[APP_LINE_COLOR] = Colors.Red;
-            Settings[APP_SIGNAL_LINE_COLOR] = Colors.Yellow;
-            Settings[APP_SIGNAL_LINE_HIGHLIGHT_COLOR] = Colors.Red;
+            Settings[LAUNCH_ON_SYSUP] = true;
+            Settings[GLOBAL_SHORT_MODKEY] = 0u;
+            Settings[GLOBAL_SHORT_KEY] = 0u;
         }
 
         #region Setting fields
 
-        public const string GLOBAL_LANGUAGE = "GLOBAL_LANGUAGE";
-        public const string GLOBAL_SUPPORT_LANGUAGES = "GLOBAL_SUPPORT_LANGUAGES";
-        public const string GLOBAL_SUPPORTMAIL = "GLOBAL_SUPPORTMAIL";
-
-        public const string APP_TEXT_SIZE = "APP_TEXT_SIZE";
-        public const string APP_TEXT_COLOR = "APP_TEXT_COLOR";
-        public const string APP_TEXT_HIGHLIGHT_COLOR = "APP_TEXT_HIGHLIGHT_COLOR";
-        public const string APP_VALUE_TEXT_COLOR = "APP_VALUE_TEXT_COLOR";
-        public const string APP_LINE_COLOR = "APP_LINE_COLOR";
-        public const string APP_SIGNAL_LINE_COLOR = "APP_SIGNAL_LINE_COLOR";
-        public const string APP_SIGNAL_LINE_HIGHLIGHT_COLOR = "APP_SIGNAL_LINE_HIGHLIGHT_COLOR";
-
+        public const string LAUNCH_ON_SYSUP = nameof(LAUNCH_ON_SYSUP);
+        public const string GLOBAL_SHORT_MODKEY = nameof(GLOBAL_SHORT_MODKEY);
+        public const string GLOBAL_SHORT_KEY = nameof(GLOBAL_SHORT_KEY);
+        
         #endregion
 
         public static AppSettings Instance
@@ -146,12 +114,10 @@ namespace KeySim.Common
 
         public string SettingFilePath
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "llaser.setting"); }
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "keysim.setting"); }
         }
 
         public ObservableDictionary<string, object> Settings { get; private set; }
-
-        #endregion
 
         #endregion
     }

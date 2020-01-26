@@ -1,40 +1,57 @@
-﻿<Window x:Class="KeyboardSim_Demo.View.OpenDiractive"
+﻿<Window x:Class="KeyboardSim.View.OpenDiractive"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:KeyboardSim_Demo.View"
+        xmlns:converter="clr-namespace:KeySim.Common.Converter;assembly=KeySim.Common"
         mc:Ignorable="d"
-        Title="打开指令" Height="250" Width="600" Topmost="True"
-        WindowStyle="ToolWindow" ShowInTaskbar="False" WindowStartupLocation="CenterScreen">
+        Title="打开指令" Height="250" Width="600" Topmost="True" BorderThickness="0" AllowsTransparency="True" ResizeMode="NoResize"
+        WindowStyle="None" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Background="#AA222222">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="20" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="3"/>
+        <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="DarkGray"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,2"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Background="#222222">
+            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2" Foreground="LightGray"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <RadioButton x:Name="radFile" GroupName="source_option" Content="文件:" VerticalAlignment="Center" Margin="5"
+            <RadioButton x:Name="radFile" GroupName="source_option" Content="文件:" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
                          IsChecked="{Binding IsFileSource}"/>
             <TextBox Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Margin="5" IsEnabled="{Binding IsChecked, ElementName=radFile}"
                      Text="{Binding FilePath}"/>
-            <Button Grid.Column="2" Content="浏览(_B)..." Margin="5" Padding="10,2" IsEnabled="{Binding IsChecked, ElementName=radFile}"
-                    Command="{Binding BrowseFileCommand}"/>
+            <Button Grid.Column="2" IsEnabled="{Binding IsChecked, ElementName=radFile}" Padding="0"
+                    Command="{Binding BrowseFileCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="pack://application:,,,/KeyboardSim;component/Resource/opened-folder.png" Margin="8,2,2,2" VerticalAlignment="Center" Width="16" Height="16"/>
+                    <AccessText Text="浏览(_B) ..." VerticalAlignment="Center" Margin="5,0,8,0"/>
+                </StackPanel>
+            </Button>
         </Grid>
 
-        <GroupBox Grid.Row="1" Header="指令数据概要" Margin="5">
-            <Grid>
+        <GroupBox Grid.Row="2" Header="指令数据概要" Margin="5" Foreground="LightGray" BorderBrush="LightGray" BorderThickness="1">
+            <Grid Visibility="{Binding Diractive, Converter={StaticResource NullVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -47,6 +64,13 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="LightGray"/>
+                        <Setter Property="Margin" Value="3"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
                 <TextBlock Grid.Row="0" Text="解释器:" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="1" Text="数据集名称:" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="2" Text="时间:" HorizontalAlignment="Right"/>
@@ -55,7 +79,13 @@
                 <TextBlock Grid.Row="5" Text="指令数:" HorizontalAlignment="Right"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Parser.Name}"/>
-                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Diractive.Name}"/>
+                <TextBlock Grid.Column="1" Grid.Row="1">
+                    <TextBlock.Inlines>
+                        <Run Text="{Binding Diractive.Name}"/>
+                        <Run Text=" - "/>
+                        <Run Text="{Binding Diractive.Description}"/>
+                    </TextBlock.Inlines>
+                </TextBlock>
                 <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Diractive.Time}"/>
                 <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Diractive.Source}"/>
                 <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Diractive.Format}"/>
@@ -63,9 +93,9 @@
             </Grid>
         </GroupBox>
 
-        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="提交(_S)" Margin="5" MinWidth="80" IsDefault="True" Command="{Binding SubmitCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
-            <Button Content="取消(_C)" Margin="5" MinWidth="80" IsCancel="True"/>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Content="提交(_S)" MinWidth="80" IsDefault="True" Command="{Binding SubmitCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Button Content="取消(_C)" MinWidth="80" IsCancel="True"/>
         </StackPanel>
     </Grid>
 </Window>

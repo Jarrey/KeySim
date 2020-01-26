@@ -1,4 +1,4 @@
-﻿using KeyboardSim_Demo.Model;
+﻿using KeyboardSim.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyboardSim_Demo.Parser
+namespace KeyboardSim.Parser
 {
     public class JsonDiractiveParser : IParser
     {

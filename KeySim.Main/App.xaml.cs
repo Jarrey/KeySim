@@ -1,13 +1,8 @@
-﻿using KeyboardSim_Demo.Parser;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KeyboardSim.Parser;
+using KeySim.Common;
 using System.Windows;
 
-namespace KeyboardSim_Demo
+namespace KeyboardSim
 {
     /// <summary>
     /// App.xaml 的交互逻辑
@@ -16,6 +11,9 @@ namespace KeyboardSim_Demo
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            // initialize application setting
+            AppSettings.InitializeSettings(AppSettings.Instance);
+
             // initialize parsers
             ParserRepository.Instance.RegisterParser(new JsonDiractiveParser());
 

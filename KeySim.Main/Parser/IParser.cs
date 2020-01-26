@@ -1,6 +1,6 @@
-﻿using KeyboardSim_Demo.Model;
+﻿using KeyboardSim.Model;
 
-namespace KeyboardSim_Demo.Parser
+namespace KeyboardSim.Parser
 {
     public interface IParser
     {

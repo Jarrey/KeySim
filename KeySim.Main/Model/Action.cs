@@ -1,9 +1,10 @@
 ﻿using KeySim.Common;
+using KeySim.Common.Command;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace KeyboardSim_Demo.Model
+namespace KeyboardSim.Model
 {
     public class Action : ModelBase
     {
@@ -15,6 +16,9 @@ namespace KeyboardSim_Demo.Model
         public string JSShortKey { get; set; }
         [JsonProperty("Actions")]
         public string[] JSActions { get; set; }
+
+        [JsonIgnore]
+        public string ShortKeydisplay => $"({JSShortKey.Replace(Separator, " + ")})".ToUpper();
 
         [JsonIgnore]
         public Tuple<uint, uint> ShortKey
@@ -55,5 +59,35 @@ namespace KeyboardSim_Demo.Model
                 return actions.ToArray();
             }
         }
+
+        #region Action Command
+        [JsonIgnore]
+        public RelayCommand ActionCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Utils.ExecuteKeyboardCommand(Actions);
+                });
+            }
+        }
+
+        public void Execute()
+        {
+            ActionCommand.Execute(null);
+        }
+        #endregion
+
+        internal void RegisterHotKey()
+        {
+            HotKeyManager.RegisterHotKey(ShortKey.Item1, ShortKey.Item2, Execute);
+        }
+
+        internal void UnregisterHotKey()
+        {
+            HotKeyManager.UnregisterHotKey(ShortKey.Item1, ShortKey.Item2);
+        }
+
     }
 }

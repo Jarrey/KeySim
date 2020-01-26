@@ -1,7 +1,7 @@
 ﻿using KeySim.Common;
 using System;
 
-namespace KeyboardSim_Demo.Model
+namespace KeyboardSim.Model
 {
     public class Diractive : ModelBase
     {
@@ -22,5 +22,27 @@ namespace KeyboardSim_Demo.Model
         public DiractiveFormat Format { get; }
 
         public Action[] Diractives { get; set; }
+
+        internal void UnregisterHotKey()
+        {
+            if (Diractives != null)
+            {
+                foreach (var action in Diractives)
+                {
+                    action.UnregisterHotKey();
+                }
+            }
+        }
+
+        internal void RegisterHotKey()
+        {
+            if (Diractives != null)
+            {
+                foreach (var action in Diractives)
+                {
+                    action.RegisterHotKey();
+                }
+            }
+        }
     }
 }
