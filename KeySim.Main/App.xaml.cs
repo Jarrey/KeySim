@@ -1,4 +1,5 @@
-﻿using KeyboardSim.Parser;
+﻿using KeyboardSim.Model;
+using KeyboardSim.Parser;
 using KeySim.Common;
 using Microsoft.Win32;
 using System.Windows;
@@ -14,11 +15,12 @@ namespace KeyboardSim
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            // initialize application setting
-            AppSettings.InitializeSettings(AppSettings.Instance);
-            // apply app seetings - launch on system up
-            Utils.RegisterAutoStartupKey((bool)AppSettings.Instance[AppSettings.LAUNCH_ON_SYSUP], AppName);
+            App.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
+            // initialize application setting
+            AppSettings.InitializeSettings(KeySimSetting.Instance);
+            // apply app seetings - launch on system up
+            Utils.RegisterAutoStartupKey((bool)KeySimSetting.Instance[KeySimSetting.LAUNCH_ON_SYSUP], AppName);
             // initialize parsers
             ParserRepository.Instance.RegisterParser(new JsonDiractiveParser());
 

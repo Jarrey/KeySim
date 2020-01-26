@@ -9,49 +9,55 @@ namespace KeySim.Common.Extension
 
     public static class StringExtension
     {
-        public static byte StringToByte(this String value)
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            if (string.IsNullOrEmpty(toCheck)) return true;
+            return source?.IndexOf(toCheck, comp) >= 0;
+        }
+
+        public static byte StringToByte(this string value)
         {
             byte result = 0;
             byte.TryParse(value, out result);
             return result;
         }
 
-        public static int StringToInt(this String value)
+        public static int StringToInt(this string value)
         {
             int result = 0;
             int.TryParse(value, out result);
             return result;
         }
 
-        public static uint StringToUInt(this String value)
+        public static uint StringToUInt(this string value)
         {
             uint result = 0;
             uint.TryParse(value, out result);
             return result;
         }
 
-        public static long StringToLong(this String value)
+        public static long StringToLong(this string value)
         {
             long result = 0L;
             long.TryParse(value, out result);
             return result;
         }
 
-        public static ulong StringToULong(this String value)
+        public static ulong StringToULong(this string value)
         {
             ulong result = 0L;
             ulong.TryParse(value, out result);
             return result;
         }
 
-        public static double StringToDouble(this String value)
+        public static double StringToDouble(this string value)
         {
             double result = 0.0;
             double.TryParse(value, out result);
             return result;
         }
 
-        public static float StringToFloat(this String value)
+        public static float StringToFloat(this string value)
         {
             float result = 0.0f;
             float.TryParse(value, out result);

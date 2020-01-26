@@ -3,7 +3,6 @@ using KeyboardSim.Parser;
 using KeySim.Common;
 using KeySim.Common.Command;
 using Microsoft.Win32;
-using System.IO;
 using System.Windows;
 
 namespace KeyboardSim.ViewModel
@@ -13,12 +12,20 @@ namespace KeyboardSim.ViewModel
         public OpenDiractiveViewModel()
         {
             // default to use file source
-            IsFileSource = true;
+            SourceType = DiractiveSource.FILE;
+            ReadSettings();
+            if (!string.IsNullOrEmpty(FilePath))
+            {
+                Diractive = DiractiveCache.Instance.ParseData(FilePath, SourceType);
+            }
 
             SubmitCommand = new RelayCommand<Window>(p =>
             {
                 if (p is Window window)
                 {
+                    KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE] = FilePath;
+                    KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE] = (uint)SourceType;
+                    AppSettings.SaveSettings(KeySimSetting.Instance);
                     window.DialogResult = true;
                     window.Close();
                 }
@@ -26,11 +33,11 @@ namespace KeyboardSim.ViewModel
         }
 
         #region Properties
-        private bool _isFileSource;
-        public bool IsFileSource
+        private DiractiveSource _sourceType;
+        public DiractiveSource SourceType
         {
-            get { return _isFileSource; }
-            set { SetProperty(ref _isFileSource, value); }
+            get { return _sourceType; }
+            set { SetProperty(ref _sourceType, value); }
         }
 
         private string _filePath;
@@ -54,7 +61,7 @@ namespace KeyboardSim.ViewModel
             set
             {
                 SetProperty(ref _diractive, value);
-                SubmitCommand.RaiseCanExecuteChanged();
+                SubmitCommand?.RaiseCanExecuteChanged();
             }
         }
         #endregion
@@ -71,21 +78,10 @@ namespace KeyboardSim.ViewModel
                         Filter = ParserRepository.Instance.SupportFormatFilter,
                         Multiselect = false
                     };
-                    if (ofd.ShowDialog() == true)
+                    if (ofd.ShowDialog() == true && FilePath != ofd.FileName)
                     {
-                        Parser = ParserRepository.Instance.GetParser(Path.GetExtension(ofd.FileName));
                         FilePath = ofd.FileName;
-                        string data = File.ReadAllText(FilePath);
-
-                        if (Parser != null)
-                        {
-                            if (Diractive != null)
-                            {
-                                Diractive.UnregisterHotKey();
-                            }
-                            Diractive = Parser.Parse(data);
-                            Diractive.RegisterHotKey();
-                        }
+                        Diractive = DiractiveCache.Instance.ParseData(FilePath, SourceType);
                     }
                 });
             }
@@ -94,5 +90,14 @@ namespace KeyboardSim.ViewModel
         public RelayCommand<Window> SubmitCommand { get; set; }
         #endregion
 
+        #region Methods
+
+        private void ReadSettings()
+        {
+            FilePath = KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE]?.ToString();
+            SourceType = (uint)KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE] == 0 ? 0 : (DiractiveSource)(uint)KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE];
+        }
+
+        #endregion
     }
 }

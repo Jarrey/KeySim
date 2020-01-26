@@ -57,6 +57,7 @@
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Command\RelayCommandGeneric.cs" />
     <Compile Include="Converter\BooleanNegationConverter.cs" />
+    <Compile Include="Converter\EnumToBooleanConverter.cs" />
     <Compile Include="Converter\NullVisibilityConverter.cs" />
     <Compile Include="Core\IExecuteWithObject.cs" />
     <Compile Include="Core\IExecuteWithObjectAndResult.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="ObservableDictionary\ObservableSortedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedExtendedEventArgs.cs" />
+    <Compile Include="UI\WindowMovingHelper.cs" />
     <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,15 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converter="clr-namespace:KeySim.Common.Converter;assembly=KeySim.Common"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:local="clr-namespace:KeyboardSim"
+        xmlns:model="clr-namespace:KeyboardSim.Model"
         mc:Ignorable="d"
-        Title="速录键盘" Height="600" Width="300" ShowInTaskbar="True" BorderThickness="7" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize"
-        Loaded="Window_Loaded"  Focusable="False" Topmost="True" Background="#88222222">
+        Height="{Binding ., Source={x:Static local:MainWindow.MainWindowHeight}}" 
+        Width="{Binding ., Source={x:Static local:MainWindow.MainWindowWidth}}" 
+        ShowInTaskbar="False" BorderThickness="7" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize" Topmost="True" Background="#88222222" Focusable="False"
+        Loaded="Window_Loaded">
     <Window.Resources>
         <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <ControlTemplate x:Key="NormalListItemTemplate" TargetType="ListBoxItem">
+            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch">
+                <Grid TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#222222">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"/>
+                    <TextBlock Grid.Column="1" Text="{Binding ShortKeyDisplay}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,15,0"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="DockedListItemTemplate" TargetType="ListBoxItem">
+            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch">
+                <Grid TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#222222">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,2,5,1"/>
+                    <TextBlock Grid.Row="1" Text="{Binding ShortKeyDisplay}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,1,15,2"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
     </Window.Resources>
-    <Grid Focusable="False">
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
@@ -40,11 +68,10 @@
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
-        <Grid Background="#222222"
+        <Grid Background="#222222" Margin="0"
               MouseDown="Caption_MouseDown"
               MouseUp="Caption_MouseUp"
               MouseMove="Caption_MouseMove">
-            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2" Foreground="LightGray"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Padding="0" Margin="0" Background="Transparent" BorderThickness="0" 
                         Command="{Binding DockLeftCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" ToolTip="停靠屏幕左侧">
@@ -64,61 +91,84 @@
                         <Image Source="pack://application:,,,/KeyboardSim;component/Resource/dock-reset.png" Margin="2" VerticalAlignment="Center" Width="18" Height="18"/>
                     </StackPanel>
                 </Button>
-                <Button Padding="0" Margin="0" Background="Transparent" BorderThickness="0" ToolTip="隐藏"
-                    Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                <Button Padding="0" Margin="0,0,1,0" Background="Transparent" BorderThickness="0" ToolTip="隐藏"
+                    Command="{Binding HideCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="pack://application:,,,/KeyboardSim;component/Resource/hide.png" Margin="2" VerticalAlignment="Center" Width="18" Height="18"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" Background="LightGray">
-            <Button HorizontalAlignment="Left" Padding="5" Margin="0" Background="Transparent" BorderThickness="0" Command="{Binding OpenCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="pack://application:,,,/KeyboardSim;component/Resource/opened-folder.png" Margin="2" VerticalAlignment="Center" Width="16" Height="16"/>
-                    <AccessText Text="打开指令集(_O) ..." VerticalAlignment="Center" Margin="4,0,0,0"/>
-                </StackPanel>
-            </Button>
-            <Button HorizontalAlignment="Right" Padding="5" Margin="0" Background="Transparent" BorderThickness="0" Command="{Binding OpenSettingCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="pack://application:,,,/KeyboardSim;component/Resource/setting.png" Margin="2" VerticalAlignment="Center" Width="16" Height="16"/>
-                    <AccessText Text="设置(_S) ..." VerticalAlignment="Center" Margin="4,0,0,0"/>
-                </StackPanel>
-            </Button>
-        </Grid>
 
-        <ListBox Grid.Row="2" Background="Transparent" BorderThickness="0" Padding="0"
-                 ItemsSource="{Binding CurrentDiractive.Diractives}" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+        <ListBox Grid.Row="1" Background="Transparent" BorderThickness="1,0,1,0" BorderBrush="#222222" Padding="0" Margin="0"
+                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="15"
+                 VirtualizingPanel.IsContainerVirtualizable="True"
+                 ItemsSource="{Binding Diractive.FilteredDiractives, Source={x:Static model:DiractiveCache.Instance}}" 
+                 ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Margin" Value="0"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <Button Margin="0,2" Padding="0,2" BorderThickness="0" Background="#88FF7F24" Command="{Binding ActionCommand}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Row="1" Text="{Binding ShortKeydisplay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Button>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Template" Value="{StaticResource DockedListItemTemplate}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DockStatus, RelativeSource={RelativeSource AncestorType=Window}}" Value="None">
+                            <Setter Property="Template" Value="{StaticResource NormalListItemTemplate}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
 
-        <Grid Grid.Row="3" Background="LightGray">
-            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2" Visibility="{Binding CurrentDiractive, Converter={StaticResource NullVisibilityConverter}}">
-                <TextBlock.Inlines>
-                    <Run Text="当前指令数据: "/>
-                    <Run Text="{Binding CurrentDiractive.Name}"/>
-                </TextBlock.Inlines>
-            </TextBlock>
-        </Grid>
+        <Border Grid.Row="2" BorderBrush="#222222" BorderThickness="1,0,1,1">
+            <Grid Background="LightGray" Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" HorizontalAlignment="Left" Padding="2" Margin="0" Background="Transparent" BorderThickness="0" Command="{Binding OpenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/KeyboardSim;component/Resource/opened-folder.png" Margin="2" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <AccessText Text="打开指令集(_O) ..." VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="1" HorizontalAlignment="Left" Padding="2" Margin="0" Background="Transparent" BorderThickness="0" Command="{Binding SyncCommand}" ToolTip="刷新">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/KeyboardSim;component/Resource/synchronize.png" Margin="2" VerticalAlignment="Center" Width="16" Height="16"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="2" HorizontalAlignment="Right" Padding="2" Margin="0" Background="Transparent" BorderThickness="0" Command="{Binding OpenSettingCommand}" ToolTip="设置">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/KeyboardSim;component/Resource/setting.png" Margin="2" VerticalAlignment="Center" Width="16" Height="16"/>
+                    </StackPanel>
+                </Button>
+
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="3" Background="LightGray" Margin="0" Visibility="{Binding CurrentDiractive, Converter={StaticResource NullVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2">
+                        <TextBlock.Inlines>
+                            <Run Text="当前指令数据: "/>
+                            <Run Text="{Binding Diractive.Name, Source={x:Static model:DiractiveCache.Instance}}"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+                        <TextBlock.Inlines>
+                            <Run Text="共 "/>
+                            <Run Text="{Binding Diractive.FilteredDiractives.Count, Source={x:Static model:DiractiveCache.Instance}, FallbackValue=N/A, Mode=OneWay}"/>
+                            <Run Text=" / "/>
+                            <Run Text="{Binding Diractive.Diractives.Length, Source={x:Static model:DiractiveCache.Instance}, FallbackValue=N/A, Mode=OneWay}"/>
+                            <Run Text=" 条"/>
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                </Grid>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

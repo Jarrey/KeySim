@@ -15,13 +15,15 @@ namespace KeyboardSim
 
         public static void RegisterMainwindowHotKey(uint modKey, uint key)
         {
-            UnregisterMainWindowHotKey();
-            PreviousMainWindowKeyId = GetHotKeyID(modKey, key);
-            RegisterHotKey(modKey, key, MainWindowShowAction);
+            RegisterMainwindowHotKey(MainWindowHandle, modKey, key, MainWindowShowAction);
         }
 
         public static void RegisterMainwindowHotKey(IntPtr handle, uint modKey, uint key, Action callback)
         {
+            if (handle == IntPtr.Zero || modKey == 0|| key == 0 || callback == null)
+            {
+                return;
+            }
             MainWindowHandle = handle;
             MainWindowShowAction = callback;
             UnregisterMainWindowHotKey();

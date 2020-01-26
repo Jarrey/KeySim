@@ -88,20 +88,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converter\ModKeyToBooleanConverter.cs" />
     <Compile Include="HotKeyManager.cs" />
+    <Compile Include="KeySimSetting.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\ActionType.cs" />
     <Compile Include="Model\Diractive.cs" />
+    <Compile Include="Model\DiractiveCache.cs" />
     <Compile Include="Model\DiractiveFormat.cs" />
     <Compile Include="Model\DiractiveSource.cs" />
     <Compile Include="Model\DockStatus.cs" />
     <Compile Include="Parser\IParser.cs" />
     <Compile Include="Parser\JsonDiractiveParser.cs" />
     <Compile Include="Parser\ParserRepository.cs" />
+    <Compile Include="SearchBar.xaml.cs">
+      <DependentUpon>SearchBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\OpenDiractiveViewModel.cs" />
+    <Compile Include="ViewModel\SearchBarViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="View\OpenDiractive.xaml.cs">
       <DependentUpon>OpenDiractive.xaml</DependentUpon>
@@ -122,6 +127,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SearchBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\OpenDiractive.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -206,6 +215,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\hide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\synchronize.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

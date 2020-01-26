@@ -12,24 +12,25 @@ namespace KeyboardSim.Model
 
         public string Name { get; set; }
 
-        [JsonProperty("ShortKey")]
-        public string JSShortKey { get; set; }
         [JsonProperty("Actions")]
         public string[] JSActions { get; set; }
 
         [JsonIgnore]
-        public string ShortKeydisplay => $"({JSShortKey.Replace(Separator, " + ")})".ToUpper();
+        public string ShortKeyString { get; set; }
+
+        [JsonIgnore]
+        public string ShortKeyDisplay => !string.IsNullOrEmpty(ShortKeyString) ? $"{ShortKeyString.Replace(Separator, " + ")}".ToUpper() : string.Empty;
 
         [JsonIgnore]
         public Tuple<uint, uint> ShortKey
         {
             get
             {
-                if (string.IsNullOrEmpty(JSShortKey))
+                if (string.IsNullOrEmpty(ShortKeyString))
                 {
                     return null;
                 }
-                string[] a = JSShortKey.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
+                string[] a = ShortKeyString.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
                 if (a.Length == 2)
                 {
                     uint modKey = a[0].StringToModKey();
@@ -81,13 +82,18 @@ namespace KeyboardSim.Model
 
         internal void RegisterHotKey()
         {
-            HotKeyManager.RegisterHotKey(ShortKey.Item1, ShortKey.Item2, Execute);
+            if (ShortKey != null)
+            {
+                HotKeyManager.RegisterHotKey(ShortKey.Item1, ShortKey.Item2, Execute);
+            }
         }
 
         internal void UnregisterHotKey()
         {
-            HotKeyManager.UnregisterHotKey(ShortKey.Item1, ShortKey.Item2);
+            if (ShortKey != null)
+            {
+                HotKeyManager.UnregisterHotKey(ShortKey.Item1, ShortKey.Item2);
+            }
         }
-
     }
 }

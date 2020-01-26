@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace KeySim.Common
 {
-    public class AppSettings : IAppSettings
+    public class AppSettings
     {
         public static void InitializeSettings(IAppSettings settingInstance)
         {
@@ -29,23 +29,23 @@ namespace KeySim.Common
                                 string typeName = element.GetAttribute("Type");
                                 string attributeValue = element.GetAttribute("Value");
                                 if (typeName == typeof(int).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToInt();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToInt();
                                 else if (typeName == typeof(uint).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToUInt();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToUInt();
                                 else if (typeName == typeof(long).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToLong();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToLong();
                                 else if (typeName == typeof(ulong).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToULong();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToULong();
                                 else if (typeName == typeof(double).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToDouble();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToDouble();
                                 else if (typeName == typeof(float).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToFloat();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToFloat();
                                 else if (typeName == typeof(bool).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToBoolean();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToBoolean();
                                 else if (typeName == typeof(string).FullName)
                                     settingInstance.Settings[keyName] = attributeValue;
                                 else if (typeName == typeof(Color).FullName)
-                                    settingInstance.Settings[keyName] = attributeValue.StringToColor();
+                                    settingInstance.Settings[keyName] = attributeValue?.StringToColor();
                             }
                         }
                     }
@@ -78,72 +78,18 @@ namespace KeySim.Common
         {
             XmlElement settingElement = xmlDoc.CreateElement("Setting");
             settingElement.SetAttribute("KeyName", keyName);
-            settingElement.SetAttribute("Value", value.ToString());
-            settingElement.SetAttribute("Type", value.GetType().FullName);
+            settingElement.SetAttribute("Value", value?.ToString());
+            settingElement.SetAttribute("Type", value?.GetType().FullName);
             return settingElement;
         }
-
-        #region For instance
-
-        private static AppSettings _instance;
-
-        private AppSettings()
-        {
-            Settings = new ObservableDictionary<string, object>();
-
-            // Create Settings for AppSettings
-            Settings[LAUNCH_ON_SYSUP] = true;
-            Settings[GLOBAL_SHORT_MODKEY] = 0u;
-            Settings[GLOBAL_SHORT_KEY] = 0u;
-
-            Settings.PropertyChanged += Settings_PropertyChanged;
-        }
-
-        private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Values" && SettingChanged != null)
-            {
-                SettingChanged(this, EventArgs.Empty);
-            }
-        }
-
-        #region Setting fields
-
-        public const string LAUNCH_ON_SYSUP = nameof(LAUNCH_ON_SYSUP);
-        public const string GLOBAL_SHORT_MODKEY = nameof(GLOBAL_SHORT_MODKEY);
-        public const string GLOBAL_SHORT_KEY = nameof(GLOBAL_SHORT_KEY);
-
-        public event EventHandler SettingChanged;
-
-        #endregion
-
-        public static AppSettings Instance
-        {
-            get { return _instance ?? (_instance = new AppSettings()); }
-        }
-
-        #region Indexer
-        public object this[string keyName]
-        {
-            get { return Settings.ContainsKey(keyName) ? Settings[keyName] : null; }
-            set { if (Settings.ContainsKey(keyName)) Settings[keyName] = value; }
-        }
-        #endregion
-
-        public string SettingFilePath
-        {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "keysim.setting"); }
-        }
-
-        public ObservableDictionary<string, object> Settings { get; private set; }
-
-        #endregion
     }
 
     public interface IAppSettings
     {
+        event EventHandler SettingChanged;
+        string SettingFileName { get; }
         string SettingFilePath { get; }
         ObservableDictionary<string, object> Settings { get; }
-        event EventHandler SettingChanged;
+        object this[string keyName] { get; set; }
     }
 }

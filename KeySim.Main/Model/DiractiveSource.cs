@@ -2,8 +2,8 @@
 {
     public enum DiractiveSource
     {
-        FILE,
-        DATABASE,
-        WEB
+        FILE = 1,
+        DATABASE = 2,
+        WEB = 3
     }
 }

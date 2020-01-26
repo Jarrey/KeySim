@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:converter="clr-namespace:KeySim.Common.Converter;assembly=KeySim.Common"
         mc:Ignorable="d"
         Title="打开指令" Height="250" Width="600" Topmost="True" BorderThickness="0" AllowsTransparency="True" ResizeMode="NoResize"
         WindowStyle="None" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Background="#AA222222">
@@ -11,7 +10,6 @@
         <WindowChrome CaptionHeight="20" />
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Style TargetType="Button">
             <Setter Property="Background" Value="DarkGray"/>
             <Setter Property="Margin" Value="5"/>
@@ -38,7 +36,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <RadioButton x:Name="radFile" GroupName="source_option" Content="文件:" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
-                         IsChecked="{Binding IsFileSource}"/>
+                         IsChecked="{Binding SourceType, Converter={StaticResource enumToBooleanConverter}, ConverterParameter=1}"/>
             <TextBox Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Margin="5" IsEnabled="{Binding IsChecked, ElementName=radFile}"
                      Text="{Binding FilePath}"/>
             <Button Grid.Column="2" IsEnabled="{Binding IsChecked, ElementName=radFile}" Padding="0"
@@ -51,7 +49,7 @@
         </Grid>
 
         <GroupBox Grid.Row="2" Header="指令数据概要" Margin="5" Foreground="LightGray" BorderBrush="LightGray" BorderThickness="1">
-            <Grid Visibility="{Binding Diractive, Converter={StaticResource NullVisibilityConverter}}">
+            <Grid Visibility="{Binding Diractive, Converter={StaticResource nullVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>

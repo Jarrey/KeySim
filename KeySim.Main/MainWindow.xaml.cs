@@ -2,10 +2,11 @@
 using GregsStack.InputSimulatorStandard.Native;
 using KeyboardSim.Model;
 using KeyboardSim.ViewModel;
-using KeySim.Common;
+using KeySim.Common.UI;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using static KeyboardSim.WinNative;
@@ -15,18 +16,46 @@ namespace KeyboardSim
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public static int MainWindowHeight = 400;
+        public static int MainWindowWidth = 800;
+
         private HwndSource _source;
         private WindowInteropHelper _winHelper;
         private IntPtr _winHandle;
-        private MainWindowViewModel viewModel = new MainWindowViewModel();
+        private InputSimulator _simulator = new InputSimulator();
+        private MainWindowViewModel _viewModel = null;
+        private SearchBarViewModel _searchBarViewModel = null;
+        private SearchBar _searchBar = null;
+        private WindowMovingHelper _movingHelper = null;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
+            _viewModel = new MainWindowViewModel();
+            DataContext = _viewModel;
+            _searchBarViewModel = new SearchBarViewModel();
+            _searchBar = new SearchBar(_searchBarViewModel);
+            _searchBar.Show();
+            _movingHelper = new WindowMovingHelper(this);
             InitializeComponent();
-            DataContext = viewModel;
+            DockStatus = DockStatus.NONE;
         }
+
+        #region Properties
+        private DockStatus _dockStatus;
+        public DockStatus DockStatus
+        {
+            get { return _dockStatus; }
+            set
+            {
+                _dockStatus = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         #region Override Methods
 
@@ -39,9 +68,12 @@ namespace KeyboardSim
             _source.AddHook(HwndHook);
 
             // Register global hotkey
-            uint modKey = (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_MODKEY];
-            uint key = (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)AppSettings.Instance[AppSettings.GLOBAL_SHORT_KEY];
+            uint modKey = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY];
+            uint key = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY];
             HotKeyManager.RegisterMainwindowHotKey(_winHandle, modKey, key, ShowWindow);
+
+            // initialize last data
+            DiractiveCache.Instance.ParseData();
 
             // Set window style to inactived
             SetWindowLong(_winHandle, GWL_EXSTYLE, GetWindowLong(_winHandle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
@@ -57,41 +89,30 @@ namespace KeyboardSim
             base.OnClosed(e);
         }
 
+        #endregion
+
         #region Window move methods
-        private bool isMoving = false;
-        private Point currentPosition = new Point();
         private void Caption_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            isMoving = true;
-            (sender as Grid).CaptureMouse();
-            currentPosition = e.GetPosition(this);
-
-            currentPosition.Y = Convert.ToInt16(Top) + currentPosition.Y;
-            currentPosition.X = Convert.ToInt16(Left) + currentPosition.X;
+            if (DockStatus == DockStatus.NONE)
+            {
+                _movingHelper.Caption_MouseDown(sender, e);
+            }
         }
         private void Caption_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isMoving = false;
-            (sender as Grid).ReleaseMouseCapture();
-        }
-
-        private void Caption_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (isMoving)
+            if (DockStatus == DockStatus.NONE)
             {
-                Point p = e.GetPosition(this);
-                Point MousePositionAbs = new Point
-                {
-                    X = Convert.ToInt16(Left) + p.X,
-                    Y = Convert.ToInt16(Top) + p.Y
-                };
-                Left = Left + (MousePositionAbs.X - currentPosition.X);
-                Top = Top + (MousePositionAbs.Y - currentPosition.Y);
-                currentPosition = MousePositionAbs;
+                _movingHelper.Caption_MouseUp(sender, e);
             }
         }
-        #endregion
-        
+        private void Caption_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (DockStatus == DockStatus.NONE)
+            {
+                _movingHelper.Caption_MouseMove(e);
+            }
+        }
         #endregion
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -108,13 +129,60 @@ namespace KeyboardSim
 
         private void ShowWindow()
         {
-            viewModel.DockWindow(this, DockStatus.FLOW);
+            DockWindow(DockStatus.FLOW);
+        }
+
+        internal void DockWindow(DockStatus dock)
+        {
+            switch (dock)
+            {
+                case DockStatus.LEFT:
+                case DockStatus.RIGHT:
+                    this.Top = 0;
+                    double width = SystemParameters.WorkArea.Width / 6;
+                    this.Left = dock == DockStatus.LEFT ? 0 : SystemParameters.WorkArea.Width - width;
+                    this.Width = width;
+                    this.Height = SystemParameters.WorkArea.Height;
+                    this.BorderThickness = dock == DockStatus.LEFT ? new Thickness(0, 0, 7, 0) : new Thickness(7, 0, 0, 0);
+                    DockStatus = dock;
+                    this.Visibility = Visibility.Visible;
+                    break;
+                case DockStatus.NONE:
+                    if (DockStatus != DockStatus.NONE)
+                    {
+                        this.Height = MainWindowHeight;
+                        this.Width = MainWindowWidth;
+                        this.Left = _searchBar.Left;
+                        this.Top = _searchBar.Top + _searchBar.Height;
+                        this.BorderThickness = new Thickness(7);
+                        DockStatus = dock;
+                    }
+                    this.Visibility = Visibility.Visible;
+                    break;
+                case DockStatus.FLOW:
+                    System.Drawing.Point point = _simulator.Mouse.Position;
+                    _searchBar.Left = point.X;
+                    _searchBar.Top = point.Y;
+                    this.Visibility = Visibility.Visible;
+                    _searchBar.Visibility = Visibility.Visible;
+                    _searchBar.ActiveByKey();
+                    if (DockStatus == DockStatus.NONE)
+                    {
+                        this.Height = MainWindowHeight;
+                        this.Width = MainWindowWidth;
+                        this.Left = _searchBar.Left;
+                        this.Top = _searchBar.Top + _searchBar.Height;
+                        this.BorderThickness = new Thickness(7);
+                    }
+                    break;
+            }
         }
 
         #region Event Handler
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Visibility = Visibility.Collapsed;
+            _searchBar.Visibility = Visibility.Collapsed;
         }
         private void ExitMenu_Click(object sender, RoutedEventArgs e)
         {
@@ -122,7 +190,14 @@ namespace KeyboardSim
         }
         private void ShowMenu_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.DockWindow(this, viewModel.DockStatus);
+            DockWindow(DockStatus);
+        }
+        #endregion
+
+        #region INotificationChanged implementation
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }

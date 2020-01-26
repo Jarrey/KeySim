@@ -8,7 +8,7 @@ namespace KeyboardSim.ViewModel
 {
     public class SettingViewModel : ViewModelBase
     {
-        private readonly AppSettings Setting = AppSettings.Instance;
+        private readonly IAppSettings Setting = KeySimSetting.Instance;
 
         public SettingViewModel()
         {
@@ -46,20 +46,20 @@ namespace KeyboardSim.ViewModel
 
         private void ReadSettings()
         {
-            LaunchOnSysUp = (bool)Setting[AppSettings.LAUNCH_ON_SYSUP];
-            GlobalShortModKey = (uint)Setting[AppSettings.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (ModKeys)(uint)Setting[AppSettings.GLOBAL_SHORT_MODKEY];
-            GlobalShortKey = (uint)Setting[AppSettings.GLOBAL_SHORT_KEY] == 0 ? 0 : (VirtualKeyCode)(uint)Setting[AppSettings.GLOBAL_SHORT_KEY];
+            LaunchOnSysUp = (bool)Setting[KeySimSetting.LAUNCH_ON_SYSUP];
+            GlobalShortModKey = (uint)Setting[KeySimSetting.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (ModKeys)(uint)Setting[KeySimSetting.GLOBAL_SHORT_MODKEY];
+            GlobalShortKey = (uint)Setting[KeySimSetting.GLOBAL_SHORT_KEY] == 0 ? 0 : (VirtualKeyCode)(uint)Setting[KeySimSetting.GLOBAL_SHORT_KEY];
         }
 
         private void WriteSettings()
         {
-            Setting[AppSettings.LAUNCH_ON_SYSUP] = LaunchOnSysUp;
-            Setting[AppSettings.GLOBAL_SHORT_MODKEY] = (uint)GlobalShortModKey;
-            Setting[AppSettings.GLOBAL_SHORT_KEY] = (uint)GlobalShortKey;
+            Setting[KeySimSetting.LAUNCH_ON_SYSUP] = LaunchOnSysUp;
+            Setting[KeySimSetting.GLOBAL_SHORT_MODKEY] = (uint)GlobalShortModKey;
+            Setting[KeySimSetting.GLOBAL_SHORT_KEY] = (uint)GlobalShortKey;
 
             AppSettings.SaveSettings(Setting);
 
-            // register global hotkey
+            // Register global hotkey
             HotKeyManager.RegisterMainwindowHotKey((uint)GlobalShortModKey, (uint)GlobalShortKey);
         }
 

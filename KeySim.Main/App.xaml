@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:KeyboardSim"
+             xmlns:converter="clr-namespace:KeySim.Common.Converter;assembly=KeySim.Common"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <converter:EnumToBooleanConverter x:Key="enumToBooleanConverter"/>
+        <converter:NullVisibilityConverter x:Key="nullVisibilityConverter"/>
     </Application.Resources>
 </Application>

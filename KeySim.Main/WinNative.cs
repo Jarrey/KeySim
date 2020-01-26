@@ -36,7 +36,6 @@ namespace KeyboardSim
         public static IEnumerable<Tuple<VirtualKeyCode, string>> NormalKeys => new Tuple<VirtualKeyCode, string>[]
         {
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.SPACE, "SPACE"),
-            new Tuple<VirtualKeyCode, string>(VirtualKeyCode.RETURN, "ENTER"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.BACK, "BACK"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.TAB, "TAB"),
             new Tuple<VirtualKeyCode, string>(VirtualKeyCode.LEFT, "LEFT"),
