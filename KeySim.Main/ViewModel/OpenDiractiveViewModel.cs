@@ -14,10 +14,7 @@ namespace KeyboardSim.ViewModel
             // default to use file source
             SourceType = DiractiveSource.FILE;
             ReadSettings();
-            if (!string.IsNullOrEmpty(FilePath))
-            {
-                Diractive = DiractiveCache.Instance.ParseData(FilePath, SourceType);
-            }
+            Diractive = DiractiveCache.Instance.Diractive;
 
             SubmitCommand = new RelayCommand<Window>(p =>
             {
@@ -45,6 +42,13 @@ namespace KeyboardSim.ViewModel
         {
             get { return _filePath; }
             set { SetProperty(ref _filePath, value); }
+        }
+
+        private string _url;
+        public string URL
+        {
+            get { return _url; }
+            set { SetProperty(ref _url, value); }
         }
 
         private IParser _parser;
@@ -83,6 +87,17 @@ namespace KeyboardSim.ViewModel
                         FilePath = ofd.FileName;
                         Diractive = DiractiveCache.Instance.ParseData(FilePath, SourceType);
                     }
+                });
+            }
+        }
+
+        public RelayCommand TestWebApiCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+
                 });
             }
         }

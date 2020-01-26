@@ -2,7 +2,7 @@
 	"Name": "测试命令集合",
 	"Description": "Test Description...",
 	"Time": "2020-01-25 04:44",
-	"Source": "file",
+	"Source": "FILE",
 	"Format": "JSON",
 	"Diractives": [
 		{

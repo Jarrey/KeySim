@@ -15,17 +15,12 @@ namespace KeyboardSim.Model
         {
             FilteredDiractives = new ObservableCollection<Action>();
         }
-        public Diractive(DiractiveSource source, DiractiveFormat format, string uri = null)
-        {
-            Source = source;
-            Format = format;
-        }
 
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime Time { get; set; }
-        public DiractiveSource Source { get; }
-        public DiractiveFormat Format { get; }
+        public DiractiveSource Source { get; set; }
+        public DiractiveFormat Format { get; set; }
 
         public Action[] Diractives { get; set; }
 

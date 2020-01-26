@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="打开指令" Height="250" Width="600" Topmost="True" BorderThickness="0" AllowsTransparency="True" ResizeMode="NoResize"
+        Title="打开指令集" Height="250" Width="600" Topmost="True" BorderThickness="0" AllowsTransparency="True" ResizeMode="NoResize"
         WindowStyle="None" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Background="#AA222222">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="20" />
@@ -22,6 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -35,10 +36,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <RadioButton x:Name="radFile" GroupName="source_option" Content="文件:" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
+            <RadioButton x:Name="radFile" GroupName="source_option" Content="文件" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
                          IsChecked="{Binding SourceType, Converter={StaticResource enumToBooleanConverter}, ConverterParameter=1}"/>
             <TextBox Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Margin="5" IsEnabled="{Binding IsChecked, ElementName=radFile}"
-                     Text="{Binding FilePath}"/>
+                     Text="{Binding FilePath, Mode=OneWay}"/>
             <Button Grid.Column="2" IsEnabled="{Binding IsChecked, ElementName=radFile}" Padding="0"
                     Command="{Binding BrowseFileCommand}">
                 <StackPanel Orientation="Horizontal">
@@ -48,10 +49,28 @@
             </Button>
         </Grid>
 
-        <GroupBox Grid.Row="2" Header="指令数据概要" Margin="5" Foreground="LightGray" BorderBrush="LightGray" BorderThickness="1">
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton x:Name="radWeb" GroupName="source_option" Content="网络" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
+                         IsChecked="{Binding SourceType, Converter={StaticResource enumToBooleanConverter}, ConverterParameter=3}"/>
+            <TextBox Grid.Column="1" VerticalAlignment="Center" Margin="5" IsEnabled="{Binding IsChecked, ElementName=radWeb}"
+                     Text="{Binding URL, Mode=TwoWay}"/>
+            <Button Grid.Column="2" IsEnabled="{Binding IsChecked, ElementName=radWeb}" Padding="0"
+                    Command="{Binding TestWebApiCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="pack://application:,,,/KeyboardSim;component/Resource/nav.png" Margin="8,2,2,2" VerticalAlignment="Center" Width="16" Height="16"/>
+                    <AccessText Text="测试(_T) ..." VerticalAlignment="Center" Margin="5,0,8,0"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        
+        <GroupBox Grid.Row="3" Header="指令数据概要" Margin="5" Foreground="LightGray" BorderBrush="LightGray" BorderThickness="1">
             <Grid Visibility="{Binding Diractive, Converter={StaticResource nullVisibilityConverter}}">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -69,29 +88,27 @@
                         <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                 </Grid.Resources>
-                <TextBlock Grid.Row="0" Text="解释器:" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Row="1" Text="数据集名称:" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Row="2" Text="时间:" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Row="3" Text="来源:" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Row="4" Text="格式:" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Row="5" Text="指令数:" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="0" Text="数据集名称:" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="1" Text="时间:" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="2" Text="来源:" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="3" Text="格式:" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="4" Text="指令数:" HorizontalAlignment="Right"/>
 
-                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Parser.Name}"/>
-                <TextBlock Grid.Column="1" Grid.Row="1">
+                <TextBlock Grid.Column="1" Grid.Row="0">
                     <TextBlock.Inlines>
                         <Run Text="{Binding Diractive.Name}"/>
                         <Run Text=" - "/>
                         <Run Text="{Binding Diractive.Description}"/>
                     </TextBlock.Inlines>
                 </TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Diractive.Time}"/>
-                <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Diractive.Source}"/>
-                <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Diractive.Format}"/>
-                <TextBlock Grid.Column="1" Grid.Row="5" Text="{Binding Diractive.Diractives.Count}"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Diractive.Time}"/>
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Diractive.Source}"/>
+                <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Diractive.Format}"/>
+                <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Diractive.Diractives.Count}"/>
             </Grid>
         </GroupBox>
 
-        <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
+        <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Content="提交(_S)" MinWidth="80" IsDefault="True" Command="{Binding SubmitCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
             <Button Content="取消(_C)" MinWidth="80" IsCancel="True"/>
         </StackPanel>

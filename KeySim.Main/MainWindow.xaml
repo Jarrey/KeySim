@@ -105,6 +105,11 @@
                  VirtualizingPanel.IsContainerVirtualizable="True"
                  ItemsSource="{Binding Diractive.FilteredDiractives, Source={x:Static model:DiractiveCache.Instance}}" 
                  ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Margin" Value="0"/>
