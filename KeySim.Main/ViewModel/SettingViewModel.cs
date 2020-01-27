@@ -60,7 +60,7 @@ namespace KeyboardSim.ViewModel
             AppSettings.SaveSettings(Setting);
 
             // Register global hotkey
-            HotKeyManager.RegisterMainwindowHotKey((uint)GlobalShortModKey, (uint)GlobalShortKey);
+            HotKeyManager.RegisterMainWindowHotKey((uint)GlobalShortModKey, (uint)GlobalShortKey);
         }
 
         #endregion

@@ -13,12 +13,12 @@ namespace KeyboardSim
 
         private static IDictionary<int, Action> HotKeys = new Dictionary<int, Action>();
 
-        public static void RegisterMainwindowHotKey(uint modKey, uint key)
+        public static void RegisterMainWindowHotKey(uint modKey, uint key)
         {
-            RegisterMainwindowHotKey(MainWindowHandle, modKey, key, MainWindowShowAction);
+            RegisterMainWindowHotKey(MainWindowHandle, modKey, key, MainWindowShowAction);
         }
 
-        public static void RegisterMainwindowHotKey(IntPtr handle, uint modKey, uint key, Action callback)
+        public static void RegisterMainWindowHotKey(IntPtr handle, uint modKey, uint key, Action callback)
         {
             if (handle == IntPtr.Zero || modKey == 0|| key == 0 || callback == null)
             {

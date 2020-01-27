@@ -82,7 +82,7 @@ namespace KeyboardSim
             // Register global hotkey
             uint modKey = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY];
             uint key = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY];
-            HotKeyManager.RegisterMainwindowHotKey(_winHandle, modKey, key, ShowWindow);
+            HotKeyManager.RegisterMainWindowHotKey(_winHandle, modKey, key, ShowWindow);
 
             // Initialize last data
             DiractiveCache.Instance.ParseData();

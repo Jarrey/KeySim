@@ -63,16 +63,10 @@ namespace KeyboardSim.Model
 
         #region Action Command
         [JsonIgnore]
-        public RelayCommand ActionCommand
+        public RelayCommand ActionCommand => new RelayCommand(() =>
         {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    Actions.ExecuteKeyboardCommand();
-                });
-            }
-        }
+            Actions.ExecuteKeyboardCommand();
+        });
 
         public void Execute()
         {
