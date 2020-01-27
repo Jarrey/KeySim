@@ -47,6 +47,7 @@ namespace KeyboardSim
                 Top = (SystemParameters.WorkArea.Height - MainWindowHeight) / 2
             };
             _searchBar.Show();
+
             Left = _searchBar.Left;
             Top = _searchBar.Top + _searchBar.Height;
 
@@ -83,7 +84,7 @@ namespace KeyboardSim
             uint key = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY];
             HotKeyManager.RegisterMainwindowHotKey(_winHandle, modKey, key, ShowWindow);
 
-            // initialize last data
+            // Initialize last data
             DiractiveCache.Instance.ParseData();
 
             // Set window style to inactived
