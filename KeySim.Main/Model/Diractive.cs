@@ -19,7 +19,7 @@ namespace KeyboardSim.Model
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime Time { get; set; }
-        public DiractiveSource Source { get; set; }
+        public string Source { get; set; }
         public DiractiveFormat Format { get; set; }
 
         public Action[] Diractives { get; set; }

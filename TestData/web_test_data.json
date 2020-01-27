@@ -1,0 +1,34 @@
+{
+	"Name": "测试命令集合_WEB",
+	"Description": "Test Description...",
+	"Time": "2020-01-25 04:44",
+	"Source": "测试数据来源",
+	"Format": "JSON",
+	"Diractives": [
+		{
+			"Name": "测试指令1-web",
+			"Actions": [
+				"I|Hello World!!!",
+				"M|TAB",
+				"M|TAB",
+				"M|TAB"
+			]
+		},
+		{
+			"Name": "测试指令2",
+			"Actions": [
+				"I|你好？",
+				"M|RETURN",
+				"I|我不好！！！",
+				"M|RETURN"
+			]
+		},
+		{
+			"Name": "测试名字很长很长很长很长的指令-3",
+			"Actions": [
+				"I|你好？",
+				"M|RETURN"
+			]
+		}
+	]
+}

@@ -65,5 +65,15 @@ namespace KeyboardSim
                 StartupPath.DeleteValue(keyName, false);
             }
         }
+
+        public static string ParseMIMEType(string mime)
+        {
+            var types = mime?.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+            if (types != null && types.Length>1)
+            {
+                return types[1];
+            }
+            return null;
+        }
     }
 }

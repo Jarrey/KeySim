@@ -16,95 +16,53 @@ namespace KeyboardSim.ViewModel
         #endregion
 
         #region Commands
-        public RelayCommand OpenCommand
+        public RelayCommand OpenCommand => new RelayCommand(() =>
         {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    OpenDiractiveViewModel vm = new OpenDiractiveViewModel();
-                    OpenDiractive openDir = new OpenDiractive(vm);
-                    openDir.ShowDialog();
-                });
-            }
-        }
+            OpenDiractiveViewModel vm = new OpenDiractiveViewModel();
+            OpenDiractive openDir = new OpenDiractive(vm);
+            openDir.ShowDialog();
+        });
 
-        public RelayCommand SyncCommand
-        {
-            get
-            {
-                return new RelayCommand(DiractiveCache.Instance.ParseData);
-            }
-        }
+        public RelayCommand SyncCommand => new RelayCommand(DiractiveCache.Instance.ParseData);
 
-        public RelayCommand<Window> HideCommand
+        public RelayCommand<Window> HideCommand => new RelayCommand<Window>(p =>
         {
-            get
+            if (p is Window window)
             {
-                return new RelayCommand<Window>(p =>
-                {
-                    if (p is Window window)
-                    {
-                        window.Visibility = Visibility.Collapsed;
-                    }
-                });
+                window.Visibility = Visibility.Collapsed;
             }
-        }
+        });
 
-        public RelayCommand OpenSettingCommand
+        public RelayCommand OpenSettingCommand => new RelayCommand(() =>
         {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    SettingViewModel vm = new SettingViewModel();
-                    Setting setting = new Setting(vm);
-                    setting.ShowDialog();
-                });
-            }
-        }
+            SettingViewModel vm = new SettingViewModel();
+            Setting setting = new Setting(vm);
+            setting.ShowDialog();
+        });
 
-        public RelayCommand<Window> DockLeftCommand
+        public RelayCommand<Window> DockLeftCommand => new RelayCommand<Window>(p =>
         {
-            get
+            if (p is MainWindow window)
             {
-                return new RelayCommand<Window>(p =>
-                {
-                    if (p is MainWindow window)
-                    {
-                        window.DockWindow(DockStatus.LEFT);
-                    }
-                });
+                window.DockWindow(DockStatus.LEFT);
             }
-        }
+        });
 
-        public RelayCommand<Window> DockRightCommand
+        public RelayCommand<Window> DockRightCommand => new RelayCommand<Window>(p =>
         {
-            get
+            if (p is MainWindow window)
             {
-                return new RelayCommand<Window>(p =>
-                {
-                    if (p is MainWindow window)
-                    {
-                        window.DockWindow(DockStatus.RIGHT);
-                    }
-                });
+                window.DockWindow(DockStatus.RIGHT);
             }
-        }
+        });
 
-        public RelayCommand<Window> DockResetCommand
+        public RelayCommand<Window> DockResetCommand => new RelayCommand<Window>(p =>
         {
-            get
+            if (p is MainWindow window)
             {
-                return new RelayCommand<Window>(p =>
-                {
-                    if (p is MainWindow window)
-                    {
-                        window.DockWindow(DockStatus.NONE);
-                    }
-                });
+                window.DockWindow(DockStatus.NONE);
             }
-        }
+        });
 
         #endregion
     }

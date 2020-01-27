@@ -34,7 +34,7 @@
                 <Image Source="pack://application:,,,/KeyboardSim;component/Resource/app-icon.png" Margin="2" VerticalAlignment="Center" Width="48" Height="48"/>
                 <TextBox x:Name="txtSearch" BorderThickness="0" Grid.Column="1" FontSize="20" FontWeight="Bold" Padding="2" Background="Transparent" VerticalContentAlignment="Center"
                          KeyUp="TextBox_KeyUp" IsTabStop="True" 
-                         Text="{Binding Diractive.FilterKeyword, Source={x:Static model:DiractiveCache.Instance}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
+                         Text="{Binding Diractive.FilterKeyword, Source={x:Static model:DiractiveCache.Instance}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
             </Grid>
         </Border>
     </Grid>

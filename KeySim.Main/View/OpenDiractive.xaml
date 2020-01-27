@@ -30,11 +30,11 @@
             <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2" Foreground="LightGray"/>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Background="Transparent" MouseUp="FileSourceGrid_MouseUp">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <RadioButton x:Name="radFile" GroupName="source_option" Content="文件" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
                          IsChecked="{Binding SourceType, Converter={StaticResource enumToBooleanConverter}, ConverterParameter=1}"/>
@@ -49,11 +49,11 @@
             </Button>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Background="Transparent" MouseUp="WebSourceGrid_MouseUp">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <RadioButton x:Name="radWeb" GroupName="source_option" Content="网络" VerticalAlignment="Center" Margin="5" Foreground="LightGray"
                          IsChecked="{Binding SourceType, Converter={StaticResource enumToBooleanConverter}, ConverterParameter=3}"/>
@@ -63,7 +63,7 @@
                     Command="{Binding TestWebApiCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="pack://application:,,,/KeyboardSim;component/Resource/nav.png" Margin="8,2,2,2" VerticalAlignment="Center" Width="16" Height="16"/>
-                    <AccessText Text="测试(_T) ..." VerticalAlignment="Center" Margin="5,0,8,0"/>
+                    <AccessText Text="获取(_G)" VerticalAlignment="Center" Margin="5,0,8,0"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -109,7 +109,23 @@
         </GroupBox>
 
         <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="提交(_S)" MinWidth="80" IsDefault="True" Command="{Binding SubmitCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Button MinWidth="80" IsDefault="True" Command="{Binding SubmitCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0" VerticalAlignment="Center" Width="16" Height="16">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="pack://application:,,,/KeyboardSim;component/Resource/unavailable.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataStatus, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="pack://application:,,,/KeyboardSim;component/Resource/checkmark.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <AccessText Text="提交(_S)" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                </StackPanel>
+            </Button>
             <Button Content="取消(_C)" MinWidth="80" IsCancel="True"/>
         </StackPanel>
     </Grid>

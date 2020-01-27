@@ -9,9 +9,9 @@ namespace KeySim.Common.Extension
 
     public static class StringExtension
     {
-        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        public static bool Contains(this string source, string toCheck, StringComparison comp, bool allowNullOrEmpty = true)
         {
-            if (string.IsNullOrEmpty(toCheck)) return true;
+            if (string.IsNullOrEmpty(toCheck)) return allowNullOrEmpty;
             return source?.IndexOf(toCheck, comp) >= 0;
         }
 

@@ -222,5 +222,9 @@
   <ItemGroup>
     <Resource Include="Resource\nav.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\checkmark.png" />
+    <Resource Include="Resource\unavailable.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -20,13 +20,13 @@ namespace KeyboardSim.ViewModel
             {
                 if (p is Window window)
                 {
-                    KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE] = FilePath;
+                    KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE] = SourceType == DiractiveSource.FILE ? FilePath : (SourceType == DiractiveSource.WEB ? URL : string.Empty);
                     KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE] = (uint)SourceType;
                     AppSettings.SaveSettings(KeySimSetting.Instance);
                     window.DialogResult = true;
                     window.Close();
                 }
-            }, p => Diractive?.Diractives?.Length > 0);
+            }, p => DataStatus);
         }
 
         #region Properties
@@ -34,7 +34,22 @@ namespace KeyboardSim.ViewModel
         public DiractiveSource SourceType
         {
             get { return _sourceType; }
-            set { SetProperty(ref _sourceType, value); }
+            set
+            {
+                SetProperty(ref _sourceType, value);
+                switch (SourceType)
+                {
+                    case DiractiveSource.FILE:
+                        TryGetData(FilePath);
+                        break;
+                    case DiractiveSource.WEB:
+                        TryGetData(URL);
+                        break;
+                    case DiractiveSource.DATABASE:
+                    default:
+                        break;
+                }
+            }
         }
 
         private string _filePath;
@@ -62,45 +77,45 @@ namespace KeyboardSim.ViewModel
         public Diractive Diractive
         {
             get { return _diractive; }
-            set
+            set { SetProperty(ref _diractive, value); }
+        }
+
+        public bool DataStatus
+        {
+            get
             {
-                SetProperty(ref _diractive, value);
-                SubmitCommand?.RaiseCanExecuteChanged();
+                bool hasDiractive = Diractive?.Diractives?.Length > 0;
+                switch (SourceType)
+                {
+                    case DiractiveSource.FILE:
+                        return hasDiractive && !string.IsNullOrEmpty(FilePath);
+                    case DiractiveSource.WEB:
+                        return hasDiractive && !string.IsNullOrEmpty(URL);
+                    case DiractiveSource.DATABASE:
+                    default:
+                        break;
+                }
+                return false;
             }
         }
         #endregion
 
         #region Commands
-        public RelayCommand BrowseFileCommand
+        public RelayCommand BrowseFileCommand => new RelayCommand(() =>
         {
-            get
+            var ofd = new OpenFileDialog
             {
-                return new RelayCommand(() =>
-                {
-                    var ofd = new OpenFileDialog
-                    {
-                        Filter = ParserRepository.Instance.SupportFormatFilter,
-                        Multiselect = false
-                    };
-                    if (ofd.ShowDialog() == true && FilePath != ofd.FileName)
-                    {
-                        FilePath = ofd.FileName;
-                        Diractive = DiractiveCache.Instance.ParseData(FilePath, SourceType);
-                    }
-                });
-            }
-        }
-
-        public RelayCommand TestWebApiCommand
-        {
-            get
+                Filter = ParserRepository.Instance.SupportFormatFilter,
+                Multiselect = false
+            };
+            if (ofd.ShowDialog() == true)
             {
-                return new RelayCommand(() =>
-                {
-
-                });
+                FilePath = ofd.FileName;
+                TryGetData(FilePath);
             }
-        }
+        });
+
+        public RelayCommand TestWebApiCommand => new RelayCommand(() => TryGetData(URL));
 
         public RelayCommand<Window> SubmitCommand { get; set; }
         #endregion
@@ -109,10 +124,27 @@ namespace KeyboardSim.ViewModel
 
         private void ReadSettings()
         {
-            FilePath = KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE]?.ToString();
             SourceType = (uint)KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE] == 0 ? 0 : (DiractiveSource)(uint)KeySimSetting.Instance[KeySimSetting.LAST_DATATYPE];
+            switch (SourceType)
+            {
+                case DiractiveSource.FILE:
+                    FilePath = KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE]?.ToString();
+                    break;
+                case DiractiveSource.WEB:
+                    URL = KeySimSetting.Instance[KeySimSetting.LAST_DATASOURCE]?.ToString();
+                    break;
+                case DiractiveSource.DATABASE:
+                default:
+                    break;
+            }
         }
 
+        private async void TryGetData(string path)
+        {
+            Diractive = await DiractiveCache.Instance.ParseData(path, SourceType);
+            SubmitCommand?.RaiseCanExecuteChanged();
+            OnPropertyChanged(nameof(DataStatus));
+        }
         #endregion
     }
 }

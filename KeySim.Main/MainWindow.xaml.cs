@@ -36,9 +36,20 @@ namespace KeyboardSim
         {
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
+            Visibility = Visibility.Collapsed;
+
+            // config search bar
             _searchBarViewModel = new SearchBarViewModel();
-            _searchBar = new SearchBar(_searchBarViewModel);
+            _searchBar = new SearchBar(_searchBarViewModel)
+            {
+                Visibility = Visibility.Collapsed,
+                Left = (SystemParameters.WorkArea.Width - MainWindowWidth) / 2,
+                Top = (SystemParameters.WorkArea.Height - MainWindowHeight) / 2
+            };
             _searchBar.Show();
+            Left = _searchBar.Left;
+            Top = _searchBar.Top + _searchBar.Height;
+
             _movingHelper = new WindowMovingHelper(this);
             InitializeComponent();
             DockStatus = DockStatus.NONE;
@@ -191,6 +202,8 @@ namespace KeyboardSim
         private void ShowMenu_Click(object sender, RoutedEventArgs e)
         {
             DockWindow(DockStatus);
+            _searchBar.Visibility = Visibility.Visible;
+            _searchBar.ActiveByKey();
         }
         #endregion
 

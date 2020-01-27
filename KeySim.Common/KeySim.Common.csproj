@@ -67,6 +67,7 @@
     <Compile Include="Core\WeakFunc.cs" />
     <Compile Include="Core\WeakFuncGeneric.cs" />
     <Compile Include="Extension\StringExtension.cs" />
+    <Compile Include="HttpUtils.cs" />
     <Compile Include="Lang.cs" />
     <Compile Include="MessageTypes.cs" />
     <Compile Include="ModelBase.cs" />

@@ -39,8 +39,8 @@ namespace KeyboardSim
         #region Event handlers
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Enter) return;
-            this.Visibility = Visibility.Collapsed;
+            if (e.Key != Key.Enter && e.Key != Key.Escape) return;
+            Visibility = Visibility.Collapsed;
         }
 
         private void Window_GotFocus(object sender, RoutedEventArgs e)

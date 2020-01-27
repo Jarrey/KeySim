@@ -66,21 +66,15 @@ namespace KeyboardSim.ViewModel
         #endregion
 
         #region Commands
-        public RelayCommand<Window> OkayCommand
+        public RelayCommand<Window> OkayCommand => new RelayCommand<Window>(p =>
         {
-            get
+            if (p is Window window)
             {
-                return new RelayCommand<Window>(p =>
-                {
-                    if (p is Window window)
-                    {
-                        WriteSettings();
-                        window.DialogResult = true;
-                        window.Close();
-                    }
-                });
+                WriteSettings();
+                window.DialogResult = true;
+                window.Close();
             }
-        }
+        });
 
         #endregion
     }

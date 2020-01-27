@@ -1,8 +1,7 @@
-﻿using System;
+﻿using KeySim.Common.Extension;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KeyboardSim.Parser
 {
@@ -41,10 +40,10 @@ namespace KeyboardSim.Parser
 
         public IParser GetParser(string ext)
         {
-            string e = ext.Trim().ToLower();
+            string e = ext?.Trim().ToLower();
             foreach (IParser parser in Parsers.Values)
             {
-                if (parser.Exts.Contains(e))
+                if (parser.Exts.Contains(e) || parser.Format.Contains(e, StringComparison.InvariantCultureIgnoreCase, false))
                 {
                     return parser;
                 }
