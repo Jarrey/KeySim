@@ -253,4 +253,15 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>set /p version=&lt;$(SolutionDir)\$(ProjectName)\Properties\version.txt
+set target=$(TargetName)_%25version%25
+cd $(SolutionDir)
+if not exist builds mkdir builds
+cd builds
+mkdir %25target%25
+xcopy $(TargetDir)* $(SolutionDir)\builds\%25target%25\
+$(SolutionDir)7z.exe a  -r %25target%25.zip -w $(SolutionDir)\builds\%25target%25\*  -mem=AES256
+rmdir /Q /S %25target%25</PostBuildEvent>
+  </PropertyGroup>
 </Project>
