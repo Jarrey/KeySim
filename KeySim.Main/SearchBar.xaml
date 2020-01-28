@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:KeyboardSim"
         xmlns:model="clr-namespace:KeyboardSim.Model"
         mc:Ignorable="d"
-        Title="速录键盘" Height="70" Width="800" ShowInTaskbar="False" BorderThickness="7"
+        Title="速录键盘" Height="70" Width="750" ShowInTaskbar="False" BorderThickness="7"
         WindowState="Normal" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize" Topmost="True" Background="Transparent"
         FocusManager.GotFocus="Window_GotFocus" Activated="Window_Activated">
     <Grid Background="Transparent">

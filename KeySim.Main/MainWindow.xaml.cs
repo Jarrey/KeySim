@@ -19,7 +19,7 @@ namespace KeyboardSim
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public static int MainWindowHeight = 400;
-        public static int MainWindowWidth = 800;
+        public static int MainWindowWidth = 750;
 
         private HwndSource _source;
         private WindowInteropHelper _winHelper;
@@ -165,14 +165,15 @@ namespace KeyboardSim
                         this.Height = MainWindowHeight;
                         this.Width = MainWindowWidth;
                         this.Left = _searchBar.Left;
-                        this.Top = _searchBar.Top + _searchBar.Height;
+                        this.Top = this.Height >= SystemParameters.WorkArea.Height - _searchBar.Top - _searchBar.Height ?
+                                    _searchBar.Top - this.Height : _searchBar.Top + _searchBar.Height;
                         this.BorderThickness = new Thickness(7);
                         DockStatus = dock;
                     }
                     this.Visibility = Visibility.Visible;
                     break;
                 case DockStatus.FLOW:
-                    System.Drawing.Point point = _simulator.Mouse.Position;
+                    System.Drawing.Point point = Utils.GetDisplayPosition(_searchBar.Width, _searchBar.Height);
                     _searchBar.Left = point.X;
                     _searchBar.Top = point.Y;
                     this.Visibility = Visibility.Visible;
@@ -183,7 +184,8 @@ namespace KeyboardSim
                         this.Height = MainWindowHeight;
                         this.Width = MainWindowWidth;
                         this.Left = _searchBar.Left;
-                        this.Top = _searchBar.Top + _searchBar.Height;
+                        this.Top = this.Height >= SystemParameters.WorkArea.Height - _searchBar.Top - _searchBar.Height ?
+                                    _searchBar.Top - this.Height : _searchBar.Top + _searchBar.Height;
                         this.BorderThickness = new Thickness(7);
                     }
                     break;

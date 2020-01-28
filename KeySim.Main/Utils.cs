@@ -3,12 +3,16 @@ using GregsStack.InputSimulatorStandard.Native;
 using KeyboardSim.Model;
 using Microsoft.Win32;
 using System;
+using System.Windows;
 using static KeyboardSim.WinNative;
+using sd = System.Drawing;
 
 namespace KeyboardSim
 {
     public static class Utils
     {
+        private static InputSimulator simulator = new InputSimulator();
+
         public static uint StringToModKey(this string modKey)
         {
             if (!string.IsNullOrEmpty(modKey))
@@ -34,7 +38,6 @@ namespace KeyboardSim
             return 0;
         }
 
-        private static InputSimulator simulator = new InputSimulator();
         public static void ExecuteKeyboardCommand(this Tuple<ActionType, string>[] actions)
         {
             if (actions != null)
@@ -64,6 +67,23 @@ namespace KeyboardSim
             {
                 StartupPath.DeleteValue(keyName, false);
             }
+        }
+
+        public static sd.Point GetDisplayPosition(double marginRight, double marginBottom)
+        {
+            sd.Point point = simulator.Mouse.Position;
+            sd.Point result = point;
+            if (point.X >= SystemParameters.WorkArea.Width - marginRight)
+            {
+                result.X = (int)(result.X - marginRight);
+            }
+
+            if (point.Y >= SystemParameters.WorkArea.Height - marginBottom)
+            {
+                result.Y = (int)(result.Y - marginBottom);
+            }
+
+            return result;
         }
 
         public static string ParseMIMEType(string mime)
