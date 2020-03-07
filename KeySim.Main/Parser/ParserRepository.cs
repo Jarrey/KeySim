@@ -43,7 +43,7 @@ namespace KeyboardSim.Parser
             string e = ext?.Trim().ToLower();
             foreach (IParser parser in Parsers.Values)
             {
-                if (parser.Exts.Contains(e) || parser.Format.Contains(e, StringComparison.InvariantCultureIgnoreCase, false))
+                if (parser.Exts.Any(p => p.Contains(e)) || parser.Format.Contains(e, StringComparison.InvariantCultureIgnoreCase, false))
                 {
                     return parser;
                 }

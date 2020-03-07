@@ -11,10 +11,12 @@ namespace KeyboardSim
     public partial class SearchBar : Window
     {
         private WindowMovingHelper _movingHelper = null;
-        public SearchBar(ViewModelBase vm)
+        private MainWindow _mainWindow = null;
+        public SearchBar(ViewModelBase vm, MainWindow window)
         {
             DataContext = vm;
             _movingHelper = new WindowMovingHelper(this);
+            _mainWindow = window;
             InitializeComponent();
         }
 
@@ -41,6 +43,10 @@ namespace KeyboardSim
         {
             if (e.Key != Key.Enter && e.Key != Key.Escape) return;
             Visibility = Visibility.Collapsed;
+            if (_mainWindow != null && e.Key == Key.Escape)
+            {
+                _mainWindow.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_GotFocus(object sender, RoutedEventArgs e)

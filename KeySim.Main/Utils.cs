@@ -88,8 +88,8 @@ namespace KeyboardSim
 
         public static string ParseMIMEType(string mime)
         {
-            var types = mime?.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-            if (types != null && types.Length>1)
+            var types = mime?.Split(new[] { "/", ";" }, StringSplitOptions.RemoveEmptyEntries);
+            if (types != null && types.Length > 1)
             {
                 return types[1];
             }

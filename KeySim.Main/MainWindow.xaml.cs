@@ -20,6 +20,8 @@ namespace KeyboardSim
     {
         public static int MainWindowHeight = 400;
         public static int MainWindowWidth = 750;
+        public static int DisplayOffsetX = 20;
+        public static int DisplayOffsetY = 20;
 
         private HwndSource _source;
         private WindowInteropHelper _winHelper;
@@ -40,7 +42,7 @@ namespace KeyboardSim
 
             // config search bar
             _searchBarViewModel = new SearchBarViewModel();
-            _searchBar = new SearchBar(_searchBarViewModel)
+            _searchBar = new SearchBar(_searchBarViewModel, this)
             {
                 Visibility = Visibility.Collapsed,
                 Left = (SystemParameters.WorkArea.Width - MainWindowWidth) / 2,
@@ -93,7 +95,9 @@ namespace KeyboardSim
 
         protected override void OnClosed(EventArgs e)
         {
-            HotKeyManager.UnregisterHotKey((uint)ModKeys.CTL, (uint)VirtualKeyCode.F10);
+            uint modKey = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_MODKEY];
+            uint key = (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY] == 0 ? 0 : (uint)KeySimSetting.Instance[KeySimSetting.GLOBAL_SHORT_KEY];
+            HotKeyManager.UnregisterHotKey(modKey, key);
             _source.RemoveHook(HwndHook);
             _source = null;
             _winHandle = IntPtr.Zero;
@@ -174,8 +178,8 @@ namespace KeyboardSim
                     break;
                 case DockStatus.FLOW:
                     System.Drawing.Point point = Utils.GetDisplayPosition(_searchBar.Width, _searchBar.Height);
-                    _searchBar.Left = point.X;
-                    _searchBar.Top = point.Y;
+                    _searchBar.Left = point.X + DisplayOffsetX;
+                    _searchBar.Top = point.Y + DisplayOffsetY;
                     this.Visibility = Visibility.Visible;
                     _searchBar.Visibility = Visibility.Visible;
                     _searchBar.ActiveByKey();
@@ -214,6 +218,14 @@ namespace KeyboardSim
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Collapsed)
+            {
+                _searchBar.Visibility = Visibility.Collapsed;
+            }
         }
         #endregion
     }

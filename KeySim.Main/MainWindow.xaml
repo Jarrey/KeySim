@@ -11,7 +11,7 @@
         Height="{Binding ., Source={x:Static local:MainWindow.MainWindowHeight}}" 
         Width="{Binding ., Source={x:Static local:MainWindow.MainWindowWidth}}" 
         ShowInTaskbar="False" BorderThickness="7" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize" Topmost="True" Background="#88222222" Focusable="False"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded" IsVisibleChanged="Window_IsVisibleChanged">
     <Window.Resources>
         <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <ControlTemplate x:Key="NormalListItemTemplate" TargetType="ListBoxItem">

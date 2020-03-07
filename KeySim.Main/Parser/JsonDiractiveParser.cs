@@ -10,7 +10,7 @@ namespace KeyboardSim.Parser
 
         public string Name => "JSON Data Source Parser";
         public string Format => "JSON";
-        public string[] Exts => new[] { ".json", ".js" };
+        public string[] Exts => new[] { ".json", ".js", ".txt", ".text", ".html", ".htm" };
 
         #endregion
 
