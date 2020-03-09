@@ -54,8 +54,8 @@ namespace KeyboardSim.Model
             UnregisterHotKey();
 
             // Filter diractive
-            string[] keywords = FilterKeyword == null ? new string[0] : FilterKeyword.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            FilteredDiractives = new ObservableCollection<Action>(Diractives.Where(a => keywords.Length == 0 || keywords.Any(k => a.Name.Contains(k, StringComparison.OrdinalIgnoreCase))));
+            string[] keywords = FilterKeyword?.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            FilteredDiractives = new ObservableCollection<Action>(Diractives.Where(a => keywords == null || keywords.Length == 0 || keywords.Any(k => a.Name.Contains(k, StringComparison.OrdinalIgnoreCase))));
 
             // Register top N actions hotkey
             RegisterHotKey();
@@ -67,6 +67,7 @@ namespace KeyboardSim.Model
             {
                 foreach (var action in FilteredDiractives.Take(HotKeyCount))
                 {
+                    action.ShortKeyString = string.Empty;
                     action.UnregisterHotKey();
                 }
             }
