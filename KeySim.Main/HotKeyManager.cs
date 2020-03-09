@@ -20,12 +20,12 @@ namespace KeyboardSim
 
         public static void RegisterMainWindowHotKey(IntPtr handle, uint modKey, uint key, Action callback)
         {
+            MainWindowHandle = handle;
+            MainWindowShowAction = callback;
             if (handle == IntPtr.Zero || modKey == 0|| key == 0 || callback == null)
             {
                 return;
             }
-            MainWindowHandle = handle;
-            MainWindowShowAction = callback;
             UnregisterMainWindowHotKey();
             PreviousMainWindowKeyId = GetHotKeyID(modKey, key);
             RegisterHotKey(modKey, key, callback);

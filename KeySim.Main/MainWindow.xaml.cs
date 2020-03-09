@@ -20,6 +20,9 @@ namespace KeyboardSim
     {
         public static int MainWindowHeight = 400;
         public static int MainWindowWidth = 750;
+        public static int MainWindowWidthDocked = (int)(SystemParameters.WorkArea.Width / 6);
+        public static int MaxLabelWidth = MainWindowWidth - 150;
+        public static int MaxLabelWidthDocked = MainWindowWidthDocked - 40;
         public static int DisplayOffsetX = 20;
         public static int DisplayOffsetY = 20;
 
@@ -155,9 +158,8 @@ namespace KeyboardSim
                 case DockStatus.LEFT:
                 case DockStatus.RIGHT:
                     this.Top = 0;
-                    double width = SystemParameters.WorkArea.Width / 6;
-                    this.Left = dock == DockStatus.LEFT ? 0 : SystemParameters.WorkArea.Width - width;
-                    this.Width = width;
+                    this.Left = dock == DockStatus.LEFT ? 0 : SystemParameters.WorkArea.Width - MainWindowWidthDocked;
+                    this.Width = MainWindowWidthDocked;
                     this.Height = SystemParameters.WorkArea.Height;
                     this.BorderThickness = dock == DockStatus.LEFT ? new Thickness(0, 0, 7, 0) : new Thickness(7, 0, 0, 0);
                     DockStatus = dock;

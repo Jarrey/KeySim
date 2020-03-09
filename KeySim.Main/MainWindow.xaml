@@ -15,26 +15,31 @@
     <Window.Resources>
         <converter:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <ControlTemplate x:Key="NormalListItemTemplate" TargetType="ListBoxItem">
-            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch">
+            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch"
+                    ToolTip="{Binding Name}">
                 <Grid TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#222222">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"/>
-                    <TextBlock Grid.Column="1" Text="{Binding ShortKeyDisplay}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,15,0"/>
+                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" TextWrapping="Wrap" 
+                               MaxWidth="{Binding ., Source={x:Static local:MainWindow.MaxLabelWidth}}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding ShortKeyDisplay}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,15,0"/>
                 </Grid>
             </Button>
         </ControlTemplate>
 
         <ControlTemplate x:Key="DockedListItemTemplate" TargetType="ListBoxItem">
-            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch">
+            <Button Margin="0,1" Padding="0,5" BorderThickness="0" Background="LightGray" Command="{Binding ActionCommand}" HorizontalContentAlignment="Stretch"
+                    ToolTip="{Binding Name}">
                 <Grid TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#222222">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,2,5,1"/>
+                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,2,5,1" TextWrapping="Wrap" 
+                               MaxWidth="{Binding ., Source={x:Static local:MainWindow.MaxLabelWidthDocked}}"/>
                     <TextBlock Grid.Row="1" Text="{Binding ShortKeyDisplay}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,1,15,2"/>
                 </Grid>
             </Button>
